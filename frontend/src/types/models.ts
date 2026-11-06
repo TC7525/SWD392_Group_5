@@ -155,9 +155,24 @@ export interface ReviewPurchaseOrderRequest {
   reason?: string | null;
 }
 
+export interface CategoryOptionDto {
+  categoryId: number;
+  categoryName: string;
+}
+
+export interface QuickCreateProductRequest {
+  productCode?: string;
+  productName: string;
+  categoryId?: number;
+  brand?: string;
+  unitPrice: number;
+  description?: string;
+}
+
 export interface PurchaseOrderFormDataResponse {
   suppliers: SupplierOptionDto[];
   products: ProductOptionDto[];
+  categories?: CategoryOptionDto[];
 }
 
 export interface CheckQuantityItemRequest {

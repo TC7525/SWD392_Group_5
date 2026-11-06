@@ -25,6 +25,22 @@ export const CreatePurchaseOrderPage: React.FC = () => {
   const [isLoadingFormData, setIsLoadingFormData] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  // Quick Add Product Modal state
+  const [showQuickAddModal, setShowQuickAddModal] = useState<boolean>(false);
+  const [quickAddTargetRowId, setQuickAddTargetRowId] = useState<string | null>(null);
+  const [newProductCode, setNewProductCode] = useState<string>('');
+  const [newProductName, setNewProductName] = useState<string>('');
+  const [newCategoryId, setNewCategoryId] = useState<number>(1);
+  const [newBrand, setNewBrand] = useState<string>('');
+  const [newUnitPrice, setNewUnitPrice] = useState<string>('');
+  const [newDescription, setNewDescription] = useState<string>('');
+  const [isSavingProduct, setIsSavingProduct] = useState<boolean>(false);
+  const [quickAddError, setQuickAddError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<{ categoryId: number; categoryName: string }[]>([
+    { categoryId: 1, categoryName: 'Điện tử & Di động' },
+    { categoryId: 2, categoryName: 'Máy tính & Laptop' },
+  ]);
+
   // Form fields
   const [supplierId, setSupplierId] = useState<number | ''>('');
   const [expectedDeliveryDate, setExpectedDeliveryDate] = useState<string>('');
@@ -44,6 +60,9 @@ export const CreatePurchaseOrderPage: React.FC = () => {
         if (!ignore && res.data) {
           setSuppliers(res.data.suppliers || []);
           setProducts(res.data.products || []);
+          if (res.data.categories && res.data.categories.length > 0) {
+            setCategories(res.data.categories);
+          }
         }
       })
       .catch((err: any) => {
@@ -73,6 +92,80 @@ export const CreatePurchaseOrderPage: React.FC = () => {
     if (!supplierId) return null;
     return suppliers.find((s) => s.supplierId === Number(supplierId)) || null;
   }, [suppliers, supplierId]);
+
+  const handleOpenQuickAddModal = (targetRowId?: string) => {
+    setQuickAddTargetRowId(targetRowId || null);
+    setNewProductCode('');
+    setNewProductName('');
+    setNewCategoryId(categories[0]?.categoryId || 1);
+    setNewBrand('');
+    setNewUnitPrice('');
+    setNewDescription('');
+    setQuickAddError(null);
+    setShowQuickAddModal(true);
+  };
+
+  const handleSaveQuickProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProductName.trim()) {
+      setQuickAddError('Vui lòng nhập tên sản phẩm.');
+      return;
+    }
+    const priceNum = newUnitPrice ? parseFloat(newUnitPrice) : 0;
+    if (isNaN(priceNum) || priceNum < 0) {
+      setQuickAddError('Đơn giá phải là số hợp lệ lớn hơn hoặc bằng 0.');
+      return;
+    }
+
+    setIsSavingProduct(true);
+    setQuickAddError(null);
+    try {
+      const res = await poApi.quickCreateProduct({
+        productCode: newProductCode.trim() || undefined,
+        productName: newProductName.trim(),
+        categoryId: newCategoryId,
+        brand: newBrand.trim() || undefined,
+        unitPrice: priceNum,
+        description: newDescription.trim() || undefined,
+      });
+
+      const createdProduct = res.data;
+      if (createdProduct) {
+        setProducts((prev) => [...prev, createdProduct]);
+
+        if (quickAddTargetRowId) {
+          setItems((prev) =>
+            prev.map((row) =>
+              row.id === quickAddTargetRowId
+                ? { ...row, productId: createdProduct.productId, unitPrice: createdProduct.unitPrice }
+                : row
+            )
+          );
+        } else {
+          setItems((prev) => [
+            ...prev,
+            {
+              id: `item-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+              productId: createdProduct.productId,
+              orderedQuantity: 1,
+              unitPrice: createdProduct.unitPrice,
+            },
+          ]);
+        }
+
+        setSuccessMessage({
+          code: 'MSG10',
+          message: `Đã tạo thành công sản phẩm "${createdProduct.productName}" và chọn vào đơn hàng.`,
+        });
+        setShowQuickAddModal(false);
+      }
+    } catch (err: any) {
+      const apiErr = err as ApiError;
+      setQuickAddError(apiErr?.message || 'Không thể tạo sản phẩm mới. Vui lòng kiểm tra lại.');
+    } finally {
+      setIsSavingProduct(false);
+    }
+  };
 
   const handleAddItem = () => {
     setItems((prev) => [
@@ -465,15 +558,26 @@ export const CreatePurchaseOrderPage: React.FC = () => {
               </span>
             </div>
 
-            <button
-              type="button"
-              className="ewms-btn ewms-btn-outline"
-              onClick={handleAddItem}
-              disabled={isSubmitting}
-              style={{ fontSize: '13px', padding: '6px 14px' }}
-            >
-              + Thêm sản phẩm
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                type="button"
+                className="ewms-btn ewms-btn-outline"
+                onClick={() => handleOpenQuickAddModal()}
+                disabled={isSubmitting}
+                style={{ fontSize: '13px', padding: '6px 14px', borderColor: '#10B981', color: '#059669', backgroundColor: '#ECFDF5' }}
+              >
+                + Tạo nhanh sản phẩm mới
+              </button>
+              <button
+                type="button"
+                className="ewms-btn ewms-btn-outline"
+                onClick={handleAddItem}
+                disabled={isSubmitting}
+                style={{ fontSize: '13px', padding: '6px 14px' }}
+              >
+                + Thêm sản phẩm
+              </button>
+            </div>
           </div>
 
           <div className="ewms-table-container">
@@ -501,31 +605,55 @@ export const CreatePurchaseOrderPage: React.FC = () => {
                       </td>
 
                       <td>
-                        <select
-                          className="ewms-select"
-                          value={row.productId}
-                          onChange={(e) => handleProductChange(row.id, e.target.value)}
-                          disabled={isLoadingFormData || isSubmitting}
-                          required
-                          style={{ fontSize: '13px' }}
-                        >
-                          <option value="">-- Chọn sản phẩm --</option>
-                          {products.map((p) => {
-                            const isSelectedElsewhere = items.some(
-                              (item) => item.id !== row.id && item.productId === p.productId
-                            );
-                            return (
-                              <option
-                                key={p.productId}
-                                value={p.productId}
-                                disabled={isSelectedElsewhere}
-                              >
-                                [{p.productCode}] {p.productName} ({formatCurrency(p.unitPrice)})
-                                {isSelectedElsewhere ? ' (Đã chọn ở dòng khác)' : ''}
-                              </option>
-                            );
-                          })}
-                        </select>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          <select
+                            className="ewms-select"
+                            value={row.productId}
+                            onChange={(e) => handleProductChange(row.id, e.target.value)}
+                            disabled={isLoadingFormData || isSubmitting}
+                            required
+                            style={{ fontSize: '13px', flex: 1 }}
+                          >
+                            <option value="">-- Chọn sản phẩm --</option>
+                            {products.map((p) => {
+                              const isSelectedElsewhere = items.some(
+                                (item) => item.id !== row.id && item.productId === p.productId
+                              );
+                              return (
+                                <option
+                                  key={p.productId}
+                                  value={p.productId}
+                                  disabled={isSelectedElsewhere}
+                                >
+                                  [{p.productCode}] {p.productName} ({formatCurrency(p.unitPrice)})
+                                  {isSelectedElsewhere ? ' (Đã chọn ở dòng khác)' : ''}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <button
+                            type="button"
+                            title="Tạo sản phẩm mới vào hệ thống và chọn luôn vào dòng này"
+                            onClick={() => handleOpenQuickAddModal(row.id)}
+                            disabled={isSubmitting}
+                            style={{
+                              padding: '7px 11px',
+                              fontSize: '12px',
+                              fontWeight: 600,
+                              color: '#059669',
+                              backgroundColor: '#ECFDF5',
+                              border: '1px solid #A7F3D0',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              whiteSpace: 'nowrap',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                            }}
+                          >
+                            + Mới
+                          </button>
+                        </div>
                       </td>
 
                       <td>
@@ -690,6 +818,169 @@ export const CreatePurchaseOrderPage: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {/* Quick Add Product Modal */}
+      {showQuickAddModal && (
+        <div
+          className="ewms-modal-backdrop"
+          onClick={() => !isSavingProduct && setShowQuickAddModal(false)}
+        >
+          <div
+            className="ewms-modal"
+            style={{ maxWidth: '540px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="ewms-modal-header">
+              <h3 className="ewms-modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '20px' }}>📦</span> Tạo nhanh sản phẩm mới
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowQuickAddModal(false)}
+                disabled={isSavingProduct}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  color: '#64748B',
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveQuickProduct}>
+              <div className="ewms-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {quickAddError && (
+                  <div className="ewms-alert ewms-alert-error" style={{ fontSize: '13px', padding: '10px 14px' }}>
+                    ⚠️ {quickAddError}
+                  </div>
+                )}
+
+                <div>
+                  <label className="ewms-label" style={{ fontSize: '13px', marginBottom: '4px', display: 'block' }}>
+                    Tên sản phẩm <span style={{ color: '#EF4444' }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="ewms-input"
+                    placeholder="VD: iPad Air 11 inch M2 128GB"
+                    value={newProductName}
+                    onChange={(e) => setNewProductName(e.target.value)}
+                    required
+                    disabled={isSavingProduct}
+                    autoFocus
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label className="ewms-label" style={{ fontSize: '13px', marginBottom: '4px', display: 'block' }}>
+                      Mã sản phẩm (Tùy chọn)
+                    </label>
+                    <input
+                      type="text"
+                      className="ewms-input"
+                      placeholder="VD: PRD-IPAD-AIR"
+                      value={newProductCode}
+                      onChange={(e) => setNewProductCode(e.target.value)}
+                      disabled={isSavingProduct}
+                    />
+                    <span style={{ fontSize: '11px', color: '#94A3B8' }}>Để trống hệ thống sẽ tự sinh mã</span>
+                  </div>
+
+                  <div>
+                    <label className="ewms-label" style={{ fontSize: '13px', marginBottom: '4px', display: 'block' }}>
+                      Danh mục <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <select
+                      className="ewms-select"
+                      value={newCategoryId}
+                      onChange={(e) => setNewCategoryId(Number(e.target.value))}
+                      disabled={isSavingProduct}
+                      required
+                    >
+                      {categories.map((c) => (
+                        <option key={c.categoryId} value={c.categoryId}>
+                          {c.categoryName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label className="ewms-label" style={{ fontSize: '13px', marginBottom: '4px', display: 'block' }}>
+                      Hãng sản xuất (Brand)
+                    </label>
+                    <input
+                      type="text"
+                      className="ewms-input"
+                      placeholder="VD: Apple, Logitech..."
+                      value={newBrand}
+                      onChange={(e) => setNewBrand(e.target.value)}
+                      disabled={isSavingProduct}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="ewms-label" style={{ fontSize: '13px', marginBottom: '4px', display: 'block' }}>
+                      Đơn giá tham chiếu (VNĐ) <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="ewms-input"
+                      min="0"
+                      step="1000"
+                      placeholder="VD: 16990000"
+                      value={newUnitPrice}
+                      onChange={(e) => setNewUnitPrice(e.target.value)}
+                      required
+                      disabled={isSavingProduct}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="ewms-label" style={{ fontSize: '13px', marginBottom: '4px', display: 'block' }}>
+                    Mô tả tóm tắt
+                  </label>
+                  <textarea
+                    className="ewms-input"
+                    rows={2}
+                    placeholder="Mô tả thông số hoặc quy cách đóng gói..."
+                    value={newDescription}
+                    onChange={(e) => setNewDescription(e.target.value)}
+                    disabled={isSavingProduct}
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
+              </div>
+
+              <div className="ewms-modal-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                <button
+                  type="button"
+                  className="ewms-btn ewms-btn-secondary"
+                  onClick={() => setShowQuickAddModal(false)}
+                  disabled={isSavingProduct}
+                >
+                  Huỷ
+                </button>
+                <button
+                  type="submit"
+                  className="ewms-btn ewms-btn-primary"
+                  disabled={isSavingProduct}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  {isSavingProduct ? 'Đang lưu...' : '✓ Lưu & Chọn vào đơn'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

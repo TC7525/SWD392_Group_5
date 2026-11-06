@@ -48,6 +48,13 @@ namespace backend.Controllers
             return Ok(ApiResponse<PurchaseOrderFormDataResponse>.Success(result, "Success", "200"));
         }
 
+        [HttpPost("products/quick-create")]
+        public async Task<IActionResult> QuickCreateProduct([FromBody] QuickCreateProductRequest request)
+        {
+            var result = await _purchaseOrderService.QuickCreateProductAsync(request);
+            return Ok(ApiResponse<ProductOptionDto>.Success(result, "Tạo sản phẩm mới thành công.", "MSG10"));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CreatePurchaseOrderRequest request)
         {

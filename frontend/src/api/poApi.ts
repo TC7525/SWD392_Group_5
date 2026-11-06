@@ -51,6 +51,16 @@ export const poApi = {
     );
     return res;
   },
+
+  quickCreateProduct: async (
+    data: import('../types/models').QuickCreateProductRequest
+  ): Promise<ApiResponse<import('../types/models').ProductOptionDto>> => {
+    const res = await apiClient.post<any, ApiResponse<import('../types/models').ProductOptionDto>>(
+      '/purchase-orders/products/quick-create',
+      data
+    );
+    return res;
+  },
 };
 
 export default poApi;

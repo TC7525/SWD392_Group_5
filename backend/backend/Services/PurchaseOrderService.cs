@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using backend.Common;
 using backend.Enums;
+using backend.Models;
 using backend.Models.DTOs;
 using backend.Models.Entities;
 using backend.Repositories;
@@ -16,17 +18,20 @@ namespace backend.Services
         private readonly ISupplierRepository _supplierRepository;
         private readonly IProductRepository _productRepository;
         private readonly IPOStatusService _poStatusService;
+        private readonly AppDbContext? _context;
 
         public PurchaseOrderService(
             IPurchaseOrderRepository purchaseOrderRepository,
             ISupplierRepository supplierRepository,
             IProductRepository productRepository,
-            IPOStatusService poStatusService)
+            IPOStatusService poStatusService,
+            AppDbContext? context = null)
         {
             _purchaseOrderRepository = purchaseOrderRepository;
             _supplierRepository = supplierRepository;
             _productRepository = productRepository;
             _poStatusService = poStatusService;
+            _context = context;
         }
 
         public async Task<PurchaseOrderResponse> CreateOrderAsync(CreatePurchaseOrderRequest request, int userId)
@@ -47,8 +52,19 @@ namespace backend.Services
                 throw new AppException("MSG01", "Required information is missing.", 400);
             }
 
+            // Group duplicate items by ProductId if any
+            var groupedItems = request.Items
+                .GroupBy(i => i.ProductId)
+                .Select(g => new CreatePurchaseOrderItemRequest
+                {
+                    ProductId = g.Key,
+                    OrderedQuantity = g.Sum(x => x.OrderedQuantity),
+                    UnitPrice = g.First().UnitPrice
+                })
+                .ToList();
+
             var poItems = new List<PurchaseOrderItem>();
-            foreach (var itemReq in request.Items)
+            foreach (var itemReq in groupedItems)
             {
                 if (itemReq.OrderedQuantity <= 0)
                 {
@@ -171,6 +187,9 @@ namespace backend.Services
         {
             var suppliers = await _supplierRepository.GetActiveSuppliersAsync();
             var products = await _productRepository.GetActiveProductsAsync();
+            var categories = _context != null
+                ? await _context.Categories.ToListAsync()
+                : new List<Category>();
 
             return new PurchaseOrderFormDataResponse
             {
@@ -189,7 +208,95 @@ namespace backend.Services
                     UnitPrice = p.UnitPrice,
                     MinimumStockLevel = p.MinimumStockLevel,
                     Status = p.Status
+                }).ToList(),
+                Categories = categories.Select(c => new CategoryOptionDto
+                {
+                    CategoryId = c.CategoryId,
+                    CategoryName = c.CategoryName
                 }).ToList()
+            };
+        }
+
+        public async Task<ProductOptionDto> QuickCreateProductAsync(QuickCreateProductRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.ProductName))
+            {
+                throw new AppException("MSG01", "Tên sản phẩm không được để trống.", 400);
+            }
+
+            if (request.UnitPrice < 0)
+            {
+                throw new AppException("MSG01", "Đơn giá không thể là số âm.", 400);
+            }
+
+            var categoryId = request.CategoryId.GetValueOrDefault(1);
+            if (_context != null && !await _context.Categories.AnyAsync(c => c.CategoryId == categoryId))
+            {
+                categoryId = 1;
+            }
+
+            string code = request.ProductCode?.Trim() ?? string.Empty;
+            if (string.IsNullOrEmpty(code))
+            {
+                var randomNum = new Random().Next(1000, 9999);
+                code = $"PRD-{randomNum}";
+                while (await _productRepository.GetByCodeAsync(code) != null)
+                {
+                    randomNum = new Random().Next(1000, 9999);
+                    code = $"PRD-{randomNum}";
+                }
+            }
+            else
+            {
+                var existing = await _productRepository.GetByCodeAsync(code);
+                if (existing != null)
+                {
+                    throw new AppException("MSG01", $"Mã sản phẩm '{code}' đã tồn tại trong hệ thống.", 400);
+                }
+            }
+
+            var product = new Product
+            {
+                ProductCode = code,
+                ProductName = request.ProductName.Trim(),
+                CategoryId = categoryId,
+                Brand = string.IsNullOrWhiteSpace(request.Brand) ? "Khác" : request.Brand.Trim(),
+                Description = string.IsNullOrWhiteSpace(request.Description) ? request.ProductName.Trim() : request.Description.Trim(),
+                UnitPrice = request.UnitPrice,
+                MinimumStockLevel = 5,
+                Status = "Active",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _productRepository.AddAsync(product);
+
+            if (_context != null)
+            {
+                var warehouses = await _context.Warehouses.ToListAsync();
+                foreach (var wh in warehouses)
+                {
+                    if (!await _context.Inventories.AnyAsync(i => i.ProductId == product.ProductId && i.WarehouseId == wh.WarehouseId))
+                    {
+                        _context.Inventories.Add(new Inventory
+                        {
+                            ProductId = product.ProductId,
+                            WarehouseId = wh.WarehouseId,
+                            Quantity = 0,
+                            LastUpdatedAt = DateTime.UtcNow
+                        });
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return new ProductOptionDto
+            {
+                ProductId = product.ProductId,
+                ProductCode = product.ProductCode,
+                ProductName = product.ProductName,
+                UnitPrice = product.UnitPrice,
+                MinimumStockLevel = product.MinimumStockLevel,
+                Status = product.Status
             };
         }
 

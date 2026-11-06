@@ -14,5 +14,6 @@ namespace backend.Services
         Task<List<PurchaseOrderListResponse>> GetPendingOrdersAsync();
         Task<PurchaseOrderResponse> GetOrderDetailAsync(int id);
         Task<PurchaseOrderFormDataResponse> GetFormDataAsync();
+        Task<ProductOptionDto> QuickCreateProductAsync(QuickCreateProductRequest request);
     }
 }

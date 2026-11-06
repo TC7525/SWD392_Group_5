@@ -110,9 +110,26 @@ namespace backend.Models.DTOs
         public string Status { get; set; } = string.Empty;
     }
 
+    public class QuickCreateProductRequest
+    {
+        public string? ProductCode { get; set; }
+        public string ProductName { get; set; } = string.Empty;
+        public int? CategoryId { get; set; }
+        public string? Brand { get; set; }
+        public decimal UnitPrice { get; set; }
+        public string? Description { get; set; }
+    }
+
+    public class CategoryOptionDto
+    {
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
+    }
+
     public class PurchaseOrderFormDataResponse
     {
         public List<SupplierOptionDto> Suppliers { get; set; } = new();
         public List<ProductOptionDto> Products { get; set; } = new();
+        public List<CategoryOptionDto> Categories { get; set; } = new();
     }
 }
