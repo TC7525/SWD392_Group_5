@@ -1,4 +1,4 @@
--- ============================================================================
+﻿-- ============================================================================
 -- EWMS (Electronic Warehouse Management System) - Database Setup & Seed Data
 -- Database Engine: Microsoft SQL Server (T-SQL)
 -- Generated for SWD392 - SE1972-NET - Group 5

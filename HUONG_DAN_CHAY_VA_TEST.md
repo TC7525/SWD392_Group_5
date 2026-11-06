@@ -23,7 +23,7 @@ File script SQL hoàn chỉnh gồm cấu trúc bảng (DDL) và dữ liệu m�
   3. Bấm **Execute** (`F5`) để chạy toàn bộ script.
 - **Cách 2 (Chạy nhanh bằng PowerShell):**
   ```powershell
-  $conn = New-Object System.Data.SqlClient.SqlConnection("Server=localhost;Database=master;Integrated Security=True;"); $conn.Open(); (Get-Content "database/EWMN_SeedData.sql" -Raw) -split "(?im)^\s*GO\s*`$" | ForEach-Object { if($_.Trim()){ $cmd = $conn.CreateCommand(); $cmd.CommandText = $_; $cmd.ExecuteNonQuery() | Out-Null } }; $conn.Close()
+  $conn = New-Object System.Data.SqlClient.SqlConnection("Server=localhost;Database=master;Integrated Security=True;"); $conn.Open(); (Get-Content "database/EWMN_SeedData.sql" -Encoding UTF8 -Raw) -split "(?im)^\s*GO\s*`$" | ForEach-Object { if($_.Trim()){ $cmd = $conn.CreateCommand(); $cmd.CommandText = $_; $cmd.ExecuteNonQuery() | Out-Null } }; $conn.Close()
   ```
 
 ### Lưu ý quan trọng về Chuỗi kết nối (Connection String):
