@@ -29,6 +29,8 @@ namespace backend
             // Services
             builder.Services.AddScoped<IPOStatusService, POStatusService>();
             builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
+            builder.Services.AddScoped<IInventoryService, InventoryService>();
+            builder.Services.AddScoped<IReceivingService, ReceivingService>();
 
             var app = builder.Build();
 
