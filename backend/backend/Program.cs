@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Models;
 using backend.Repositories;
+using backend.Services;
 
 namespace backend
 {
@@ -24,6 +25,10 @@ namespace backend
             builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
             builder.Services.AddScoped<IInventoryTransactionRepository, InventoryTransactionRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+            // Services
+            builder.Services.AddScoped<IPOStatusService, POStatusService>();
+            builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 
             var app = builder.Build();
 
