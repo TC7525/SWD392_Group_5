@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using backend.Models;
+using backend.Repositories;
+
 namespace backend
 {
     public class Program
@@ -8,6 +12,18 @@ namespace backend
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // DbContext
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Repositories
+            builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+            builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+            builder.Services.AddScoped<IInventoryTransactionRepository, InventoryTransactionRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 
