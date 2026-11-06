@@ -1,57 +1,80 @@
 # HƯỚNG DẪN KHỞI CHẠY VÀ KIỂM THỬ DEMO LUỒNG PURCHASE ORDER (EWMS)
-
-> **Dự án:** Electronic Warehouse Management System (EWMS) - SE1972-NET - Group 5  
-> **Phạm vi Demo:** Toàn bộ luồng Quản lý Đơn mua hàng & Nhập kho (Use Cases **UC09 – UC14** theo SRS Report 1 & SDS Report 2).
+> **Dành cho thành viên nhóm hoặc giảng viên vừa Clone / Pull project từ Git về máy.**
 
 ---
 
-## 1. Môi trường yêu cầu (Prerequisites)
-
-- **Hệ điều hành:** Windows 10/11
-- **Database:** Microsoft SQL Server (Instance mặc định `localhost` / `MSSQLSERVER` hoặc `SQLEXPRESS`)
-- **Backend:** .NET 8.0 SDK
-- **Frontend:** Node.js (v18 trở lên) & npm
+## 1. Yêu cầu môi trường cài đặt sẵn trên máy
+Trước khi khởi chạy, máy tính của bạn cần có:
+1. **.NET 8.0 SDK** (Kiểm tra bằng lệnh: `dotnet --version` -> hiển thị 8.0.x hoặc 10.x).
+2. **Node.js** (Khuyên dùng v18 đến v22, kèm npm. Kiểm tra bằng lệnh: `node -v`).
+3. **Microsoft SQL Server** (Bản Developer, Standard, Express hoặc LocalDB) kèm phần mềm quản lý như **SSMS** (SQL Server Management Studio) hoặc Azure Data Studio.
 
 ---
 
-## 2. Chuẩn bị Cơ sở dữ liệu (Database Setup)
+## 2. Bước 1: Khởi tạo Cơ sở dữ liệu (Database Setup)
 
 File script SQL hoàn chỉnh gồm cấu trúc bảng (DDL) và dữ liệu mẫu (Seed Data) được lưu tại:  
 📁 [`database/EWMN_SeedData.sql`](file:///c:/Users/Admin/Desktop/SWD392_Group_5/database/EWMN_SeedData.sql)
 
 ### Cách chạy:
-- **Cách 1 (Khuyên dùng - SQL Server Management Studio / Azure Data Studio):**  
-  Mở file `database/EWMN_SeedData.sql` trong SSMS và bấm **Execute** (`F5`).
-- **Cách 2 (PowerShell):**
+- **Cách 1 (Đơn giản nhất qua SSMS):**  
+  1. Mở SQL Server Management Studio (SSMS) và kết nối vào SQL Server trên máy bạn.
+  2. Mở file `database/EWMN_SeedData.sql`.
+  3. Bấm **Execute** (`F5`) để chạy toàn bộ script.
+- **Cách 2 (Chạy nhanh bằng PowerShell):**
   ```powershell
   $conn = New-Object System.Data.SqlClient.SqlConnection("Server=localhost;Database=master;Integrated Security=True;"); $conn.Open(); (Get-Content "database/EWMN_SeedData.sql" -Raw) -split "(?im)^\s*GO\s*`$" | ForEach-Object { if($_.Trim()){ $cmd = $conn.CreateCommand(); $cmd.CommandText = $_; $cmd.ExecuteNonQuery() | Out-Null } }; $conn.Close()
   ```
-- *Lưu ý:* Khi khởi động Backend, hệ thống cũng tích hợp cơ chế tự động tạo dữ liệu mẫu (`DbInitializer.cs`) nếu các bảng còn trống.
+
+### Lưu ý quan trọng về Chuỗi kết nối (Connection String):
+Mở file `backend/backend/appsettings.json` và kiểm tra cấu hình:
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=EWMN;Trusted_Connection=True;TrustServerCertificate=True;"
+}
+```
+- Nếu SQL Server của bạn có tên instance là `SQLEXPRESS` (thường gặp khi cài bản Express), bạn sửa lại `Server=localhost\\SQLEXPRESS` hoặc `Server=.\\SQLEXPRESS`.
+- Nếu dùng LocalDB, đổi thành: `Server=(localdb)\\MSSQLLocalDB;Database=EWMN;Trusted_Connection=True;`.
 
 ---
 
-## 3. Khởi chạy hệ thống (How to Run)
+## 3. Bước 2: Khởi chạy Backend (C# ASP.NET Core 8 Web API)
 
-### 3.1. Khởi chạy Backend (C# ASP.NET Core 8 Web API)
-Mở một cửa sổ Terminal (PowerShell):
+Mở một cửa sổ Terminal (PowerShell hoặc CMD):
 ```powershell
+# Di chuyển vào thư mục dự án backend
 cd c:\Users\Admin\Desktop\SWD392_Group_5\backend\backend
+
+# Khôi phục các thư viện NuGet (Bắt buộc chạy lần đầu)
+dotnet restore
+
+# Khởi chạy server
 dotnet run
 ```
-- Backend sẽ chạy tại: **`http://localhost:5000`**
-- Swagger / OpenAPI: `http://localhost:5000/swagger`
-
-### 3.2. Khởi chạy Frontend (React 19 + TypeScript + Vite)
-Mở một cửa sổ Terminal thứ 2:
-```powershell
-cd c:\Users\Admin\Desktop\SWD392_Group_5\frontend
-npm run dev
-```
-- Mở trình duyệt web truy cập: **`http://localhost:5173`**
+- Server Backend sẽ lắng nghe tại: **`http://localhost:5000`**
+- Trang tài liệu API (Swagger UI): `http://localhost:5000/swagger`
 
 ---
 
-## 4. Danh sách tài khoản thử nghiệm (Seed Accounts)
+## 4. Bước 3: Cài đặt thư viện & Khởi chạy Frontend (React + TypeScript + Vite)
+
+Mở một cửa sổ Terminal thứ 2:
+```powershell
+# Di chuyển vào thư mục frontend
+cd c:\Users\Admin\Desktop\SWD392_Group_5\frontend
+
+# Cài đặt các gói thư viện (BẮT BUỘC vì git không lưu thư mục node_modules)
+npm install
+
+# Khởi chạy giao diện ở chế độ Development
+npm run dev
+```
+- Sau khi chạy xong, Vite sẽ cung cấp đường link: **`http://localhost:5173`**
+- Bạn mở trình duyệt (Chrome/Edge/Brave) và truy cập vào link trên.
+
+---
+
+## 5. Danh sách tài khoản thử nghiệm (Seed Accounts)
 
 Mật khẩu mặc định cho tất cả tài khoản là: **`123456`**
 
@@ -61,8 +84,8 @@ Mật khẩu mặc định cho tất cả tài khoản là: **`123456`**
 | **Warehouse Manager** | `manager_kho@ewms.com` | Trần Quản Lý | Duyệt / từ chối đơn mua hàng (UC10), xem toàn bộ PO |
 | **Warehouse Staff** | `staff_kho@ewms.com` | Lê Nhân Viên Kho | Kiểm tra số lượng (UC12), nhận hàng và cập nhật tồn kho (UC13, UC14) |
 
-> 💡 **Tính năng tiện ích (Quick Persona Switcher):**  
-> Trên thanh **Navbar** ở góc trên cùng bên phải và tại trang **Đăng nhập**, luôn có sẵn 3 nút chuyển đổi nhanh vai trò: **[Mua hàng]**, **[Quản lý]**, **[Thủ kho]**. Bạn chỉ cần click 1 lần là hệ thống tự động đổi token và quyền tương ứng mà không cần gõ lại mật khẩu!
+> ⚡ **Tính năng tiện ích (Quick Persona Switcher):**  
+> Trên thanh **Navbar** ở góc trên cùng bên phải và tại trang **Đăng nhập**, luôn có sẵn 3 nút chuyển đổi nhanh vai trò: **[Mua hàng]**, **[Quản lý]**, **[Thủ kho]**. Bạn chỉ cần click 1 lần là hệ thống tự động đăng nhập và đổi quyền tương ứng mà không cần gõ lại mật khẩu!
 
 ---
 
@@ -155,3 +178,4 @@ Trong thư mục gốc dự án, bạn có thể chạy bộ kiểm thử tự �
    npm --prefix frontend run lint
    ```
    *Kết quả mong đợi:* `0 errors, 0 warnings`
+
