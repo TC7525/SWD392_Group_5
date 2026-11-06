@@ -146,6 +146,8 @@ export interface PurchaseOrderListResponse {
   totalQuantity: number;
   totalAmount: number;
   grandTotal: number;
+  totalReceivedQuantity?: number;
+  totalRemainingQuantity?: number;
   createdAt: string;
 }
 
@@ -202,6 +204,7 @@ export interface InventoryStockResponse {
   warehouseCode: string;
   warehouseName: string;
   quantity: number;
+  minimumStockLevel?: number;
   lastUpdatedAt: string;
 }
 
