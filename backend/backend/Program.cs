@@ -83,6 +83,42 @@ namespace backend
             builder.Services.AddScoped<IInventoryService, InventoryService>();
             builder.Services.AddScoped<IReceivingService, ReceivingService>();
 
+            // 7. Swagger / OpenAPI Documentation
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "EWMS - Electronic Warehouse Management System API",
+                    Version = "v1",
+                    Description = "API tài liệu và thử nghiệm cho các use cases Quản lý Mua hàng & Nhập kho (UC09 – UC14)"
+                });
+
+                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Description = "Nhập token JWT theo định dạng: Bearer {token}",
+                    Name = "Authorization",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                {
+                    {
+                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        {
+                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            {
+                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
+
             var app = builder.Build();
 
             // 7. Initialize & Seed Database
@@ -111,6 +147,14 @@ namespace backend
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
+
+            // Enable Swagger and Swagger UI
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EWMS API v1");
+                c.RoutePrefix = "swagger";
+            });
 
             app.UseRouting();
 
