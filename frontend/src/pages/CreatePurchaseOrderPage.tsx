@@ -242,6 +242,18 @@ export const CreatePurchaseOrderPage: React.FC = () => {
       }
     }
 
+    // Validation 6: Duplicate products check
+    const productIds = items.map((i) => i.productId).filter(Boolean);
+    const hasDuplicate = productIds.some((id, idx) => productIds.indexOf(id) !== idx);
+    if (hasDuplicate) {
+      setErrorMessage({
+        code: 'MSG01',
+        message: 'Mỗi sản phẩm chỉ được xuất hiện 1 dòng trong đơn hàng. Vui lòng tăng số lượng sản phẩm thay vì thêm nhiều dòng trùng nhau.',
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     const payload: CreatePurchaseOrderRequest = {
       supplierId: Number(supplierId),
       expectedDeliveryDate: expectedDeliveryDate ? new Date(expectedDeliveryDate).toISOString() : null,
@@ -498,11 +510,21 @@ export const CreatePurchaseOrderPage: React.FC = () => {
                           style={{ fontSize: '13px' }}
                         >
                           <option value="">-- Chọn sản phẩm --</option>
-                          {products.map((p) => (
-                            <option key={p.productId} value={p.productId}>
-                              [{p.productCode}] {p.productName} ({formatCurrency(p.unitPrice)})
-                            </option>
-                          ))}
+                          {products.map((p) => {
+                            const isSelectedElsewhere = items.some(
+                              (item) => item.id !== row.id && item.productId === p.productId
+                            );
+                            return (
+                              <option
+                                key={p.productId}
+                                value={p.productId}
+                                disabled={isSelectedElsewhere}
+                              >
+                                [{p.productCode}] {p.productName} ({formatCurrency(p.unitPrice)})
+                                {isSelectedElsewhere ? ' (Đã chọn ở dòng khác)' : ''}
+                              </option>
+                            );
+                          })}
                         </select>
                       </td>
 
