@@ -328,7 +328,11 @@ INSERT INTO products (product_id, product_code, product_name, category_id, brand
 (1, 'PRD-IP16', N'iPhone 16 Pro Max 256GB Desert Titanium', 1, 'Apple', N'Chip A18 Pro, màn hình Super Retina XDR 6.9 inch', 34990000, 10, 'Active', GETDATE()),
 (2, 'PRD-S24', N'Samsung Galaxy S24 Ultra 512GB Titanium Gray', 1, 'Samsung', N'Snapdragon 8 Gen 3, Camera 200MP, Galaxy AI', 29990000, 10, 'Active', GETDATE()),
 (3, 'PRD-MBA', N'MacBook Air 13 inch M3 16GB 512GB Space Gray', 2, 'Apple', N'Apple M3 8-core CPU, 10-core GPU, Liquid Retina', 27500000, 5, 'Active', GETDATE()),
-(4, 'PRD-SNY', N'Tai nghe Sony WH-1000XM5 Wireless Noise Canceling', 1, 'Sony', N'Chống ồn đỉnh cao, thời lượng pin 30 giờ', 7490000, 8, 'Active', GETDATE());
+(4, 'PRD-SNY', N'Tai nghe Sony WH-1000XM5 Wireless Noise Canceling', 1, 'Sony', N'Chống ồn đỉnh cao, thời lượng pin 30 giờ', 7490000, 8, 'Active', GETDATE()),
+(5, 'PRD-IPAD', N'iPad Pro 11 inch M4 256GB Wi-Fi', 1, 'Apple', N'Máy tính bảng Apple chip M4 thế hệ mới', 28990000, 5, 'Active', GETDATE()),
+(6, 'PRD-LOGI', N'Chuột Logitech MX Master 3S Wireless', 2, 'Logitech', N'Chuột công thái học cao cấp cho văn phòng và đồ họa', 2490000, 10, 'Active', GETDATE()),
+(7, 'PRD-DELL', N'Màn hình Dell UltraSharp U2724D 27 inch 2K 120Hz', 2, 'Dell', N'Màn hình chuyên đồ họa chuẩn màu IPS Black', 11500000, 5, 'Active', GETDATE()),
+(8, 'PRD-KEY', N'Bàn phím cơ Keychron K2 Pro QMK/VIA Wireless', 2, 'Keychron', N'Bàn phím cơ không dây layout 75%', 2190000, 10, 'Active', GETDATE());
 SET IDENTITY_INSERT products OFF;
 
 -- Baseline initial stock (0 for fresh demo)
@@ -337,10 +341,18 @@ INSERT INTO inventories (product_id, warehouse_id, quantity, last_updated_at) VA
 (2, 1, 0, GETDATE()),
 (3, 1, 0, GETDATE()),
 (4, 1, 0, GETDATE()),
+(5, 1, 0, GETDATE()),
+(6, 1, 0, GETDATE()),
+(7, 1, 0, GETDATE()),
+(8, 1, 0, GETDATE()),
 (1, 2, 0, GETDATE()),
 (2, 2, 0, GETDATE()),
 (3, 2, 0, GETDATE()),
-(4, 2, 0, GETDATE());
+(4, 2, 0, GETDATE()),
+(5, 2, 0, GETDATE()),
+(6, 2, 0, GETDATE()),
+(7, 2, 0, GETDATE()),
+(8, 2, 0, GETDATE());
 
 PRINT N'EWMS Database schema and seed data created successfully!';
 GO
