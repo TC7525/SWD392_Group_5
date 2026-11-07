@@ -180,18 +180,28 @@ export const UserAccessLogPage: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleSaveAccount = async (e: React.FormEvent) => {
+  const handleSaveAccount = async (e: React.FormEvent, forceCreate = false) => {
     e.preventDefault();
+    if (!empCode.trim()) {
+      notifyError('Vui lòng nhập Tên đăng nhập (Mã NV)');
+      return;
+    }
+    if (!fullName.trim()) {
+      notifyError('Vui lòng nhập Họ và tên nhân viên');
+      return;
+    }
     try {
       const whIds =
         selectedWhId === 'ALL' ? warehouses.map((w) => w.id) : [selectedWhId];
 
-      if (editingAcc) {
+      const isUpdate = Boolean(editingAcc) && !forceCreate;
+
+      if (isUpdate && editingAcc) {
         await masterDataService.updateAccount({
           id: editingAcc.id,
-          employee_code: empCode,
-          full_name: fullName,
-          email,
+          employee_code: empCode.trim(),
+          full_name: fullName.trim(),
+          email: email.trim(),
           role_id: roleId,
           warehouse_ids: whIds,
           status,
@@ -199,15 +209,15 @@ export const UserAccessLogPage: React.FC = () => {
         notifySuccess(`Đã cập nhật tài khoản '${fullName}' thành công!`);
       } else {
         await masterDataService.createAccount({
-          employee_code: empCode || undefined,
-          full_name: fullName,
-          email: email || `${empCode.toLowerCase() || 'user'}@ewms.vn`,
+          employee_code: empCode.trim() || undefined,
+          full_name: fullName.trim(),
+          email: email.trim() || `${empCode.trim().toLowerCase() || 'user'}@ewms.vn`,
           password: password || 'Admin@123',
           role_id: roleId,
           warehouse_ids: whIds,
           status,
         });
-        notifySuccess(`Đã thêm tài khoản '${fullName}' thành công!`);
+        notifySuccess(`Đã tạo mới tài khoản '${fullName}' thành công!`);
       }
       setShowModal(false);
       loadData();
@@ -238,9 +248,12 @@ export const UserAccessLogPage: React.FC = () => {
           </h1>
           <p>Quản lý tài khoản người dùng và ma trận phân quyền chi tiết vai trò</p>
         </div>
-        <div className="page-actions">
+        <div className="page-actions" style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-outline" onClick={loadData} title="Tải lại danh sách">
+            🔄 Tải lại dữ liệu
+          </button>
           <button className="btn btn-emerald" onClick={openCreateModal}>
-            👤+ Thêm tài khoản
+            ➕ Thêm mới tài khoản
           </button>
         </div>
       </div>
@@ -323,22 +336,38 @@ export const UserAccessLogPage: React.FC = () => {
                       )}
                     </td>
                     <td style={{ textAlign: 'center' }}>
-                      <button
-                        className="icon-action-btn"
-                        title="Cập nhật Tài khoản & Ma trận phân quyền"
-                        onClick={() => openEditModal(acc)}
+                      <div
+                        style={{
+                          display: 'inline-flex',
+                          gap: 6,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
                       >
-                        ✏️
-                      </button>
-                      {!isAdmin && (
                         <button
-                          className="icon-action-btn danger"
-                          title="Xóa tài khoản"
-                          onClick={() => handleDeleteAccount(acc)}
+                          className="btn btn-outline btn-sm"
+                          style={{
+                            padding: '4px 9px',
+                            fontSize: 12,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 4,
+                          }}
+                          title="Cập nhật Tài khoản & Ma trận phân quyền"
+                          onClick={() => openEditModal(acc)}
                         >
-                          🗑️
+                          ✏️ Cập nhật
                         </button>
-                      )}
+                        {!isAdmin && (
+                          <button
+                            className="icon-action-btn danger"
+                            title="Xóa tài khoản"
+                            onClick={() => handleDeleteAccount(acc)}
+                          >
+                            🗑️
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -373,10 +402,14 @@ export const UserAccessLogPage: React.FC = () => {
       {/* MODAL CẬP NHẬT TÀI KHOẢN & MA TRẬN PHÂN QUYỀN CHI TIẾT (Screen 2) */}
       {showModal && (
         <div className="modal-backdrop" onClick={() => setShowModal(false)}>
-          <div className="modal-dialog lg" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="modal-dialog lg"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}
+          >
             <div className="modal-header">
               <div className="modal-title">
-                {editingAcc ? 'Cập nhật Tài Khoản' : 'Thêm mới Tài Khoản'}
+                {editingAcc ? '✏️ Cập nhật Tài Khoản' : '➕ Thêm mới Tài Khoản'}
               </div>
               <button
                 className="modal-close-btn"
@@ -386,7 +419,16 @@ export const UserAccessLogPage: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSaveAccount}>
+            <form
+              onSubmit={(e) => handleSaveAccount(e, false)}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 1,
+                minHeight: 0,
+                overflow: 'hidden',
+              }}
+            >
               <div className="modal-body">
                 <div className="form-grid-2">
                   <div className="form-group">
@@ -607,17 +649,33 @@ export const UserAccessLogPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="modal-footer">
+              <div className="modal-footer" style={{ flexShrink: 0 }}>
                 <button
                   type="button"
                   className="btn btn-outline"
                   onClick={() => setShowModal(false)}
                 >
-                  Hủy
+                  ✕ Hủy
                 </button>
-                <button type="submit" className="btn btn-emerald">
-                  💾 Lưu Tài Khoản
-                </button>
+                {editingAcc ? (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      title="Tạo mới tài khoản từ thông tin hiện tại"
+                      onClick={(e) => handleSaveAccount(e, true)}
+                    >
+                      ➕ Tạo mới
+                    </button>
+                    <button type="submit" className="btn btn-emerald">
+                      💾 Cập nhật
+                    </button>
+                  </>
+                ) : (
+                  <button type="submit" className="btn btn-emerald">
+                    ➕ Tạo mới
+                  </button>
+                )}
               </div>
             </form>
           </div>
