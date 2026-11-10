@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { masterDataService } from '../../services/masterDataService';
 import { stockTransferService } from '../../services/orderService';
@@ -103,7 +104,8 @@ export const StockTransferPage: React.FC = () => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#f59e0b' }}>⇄</span> Quản Lý Phiếu Chuyển Kho Liên Chi Nhánh
+            <Icon name="exchange" color="#f59e0b" />
+            Quản Lý Phiếu Chuyển Kho Liên Chi Nhánh
           </h1>
           <p>
             Điều chuyển hàng hóa nội bộ giữa các chi nhánh kho (Duyệt lệnh → Xuất kho nguồn → Nhập kho đích)
@@ -111,13 +113,13 @@ export const StockTransferPage: React.FC = () => {
         </div>
         <div className="page-actions">
           <button className="btn btn-warning" onClick={() => setShowModal(true)}>
-            + Chuyển kho
+            <Icon name="add" /> Chuyển kho
           </button>
           <button
             className="btn btn-outline"
             onClick={() => notifySuccess('Đã xuất danh sách Phiếu chuyển kho ra Excel!')}
           >
-            📗 Excel
+            <Icon name="file-excel" /> Excel
           </button>
         </div>
       </div>
@@ -125,7 +127,7 @@ export const StockTransferPage: React.FC = () => {
       <div className="surface-card">
         <div className="filter-bar">
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">              <Icon name="search" /></span>
             <input
               className="search-box-input"
               placeholder="Tìm số phiếu chuyển, kho nguồn, kho đích..."
@@ -185,7 +187,7 @@ export const StockTransferPage: React.FC = () => {
                         className="btn btn-emerald btn-sm"
                         onClick={() => handleAction('approve', tf.id)}
                       >
-                        ✓ Duyệt lệnh
+                        <Icon name="check" /> Duyệt lệnh
                       </button>
                     )}
                     {tf.status === 2 && (
@@ -193,7 +195,7 @@ export const StockTransferPage: React.FC = () => {
                         className="btn btn-warning btn-sm"
                         onClick={() => handleAction('dispatch', tf.id)}
                       >
-                        🚚 Xuất kho nguồn
+                        <Icon name="truck-side" /> Xuất kho nguồn
                       </button>
                     )}
                     {tf.status === 4 && (
@@ -201,7 +203,7 @@ export const StockTransferPage: React.FC = () => {
                         className="btn btn-emerald btn-sm"
                         onClick={() => handleAction('receive', tf.id)}
                       >
-                        📥 Nhận tại kho đích
+                        <Icon name="inbox-in" /> Nhận tại kho đích
                       </button>
                     )}
                   </td>
@@ -223,12 +225,14 @@ export const StockTransferPage: React.FC = () => {
         <div className="modal-backdrop" onClick={() => setShowModal(false)}>
           <div className="modal-dialog md" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <div className="modal-title">⇄ Lập Phiếu Chuyển Kho Nội Bộ</div>
+              <div className="modal-title">
+                <Icon name="exchange" color="#f59e0b" /> Lập Phiếu Chuyển Kho Nội Bộ
+              </div>
               <button
                 className="modal-close-btn"
                 onClick={() => setShowModal(false)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <form onSubmit={handleCreateTransfer}>
@@ -310,7 +314,7 @@ export const StockTransferPage: React.FC = () => {
                   Hủy
                 </button>
                 <button type="submit" className="btn btn-warning">
-                  ⇄ Tạo Phiếu Chuyển Kho
+                  <Icon name="exchange" /> Tạo Phiếu Chuyển Kho
                 </button>
               </div>
             </form>

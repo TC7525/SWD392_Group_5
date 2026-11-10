@@ -4,7 +4,9 @@ import {
   type AccountItem,
   type CategoryItem,
   type CustomerItem,
+  type PermissionItem,
   type ProductItem,
+  type RoleDetailItem,
   type RoleItem,
   type SupplierItem,
   type WarehouseItem,
@@ -208,6 +210,35 @@ export const masterDataService = {
     httpRequest<PagedResult<RoleItem>>('api/role/search', {
       method: 'POST',
       body: JSON.stringify({ page_index: 1, page_size: 50 }),
+    }),
+
+  getRoleById: (id: string) => httpRequest<RoleDetailItem>(`api/role/${id}`),
+
+  getPermissions: () => httpRequest<PermissionItem[]>('api/role/permissions'),
+
+  createRole: (payload: {
+    role_code: string;
+    role_name: string;
+    description?: string;
+    status?: number;
+    permission_ids?: string[];
+  }) =>
+    httpRequest<string>('api/role/create', {
+      method: 'POST',
+      body: JSON.stringify({ status: 1, permission_ids: [], ...payload }),
+    }),
+
+  updateRole: (payload: {
+    id: string;
+    role_code: string;
+    role_name: string;
+    description?: string;
+    status?: number;
+    permission_ids: string[];
+  }) =>
+    httpRequest<boolean>('api/role/update', {
+      method: 'PUT',
+      body: JSON.stringify({ status: 1, ...payload }),
     }),
 
   searchAccounts: (keyword?: string) =>

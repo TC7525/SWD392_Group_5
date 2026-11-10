@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { masterDataService } from '../../services/masterDataService';
 import { type CustomerItem, type SupplierItem } from '../../types/master.types';
@@ -99,7 +100,8 @@ export const ContactPage: React.FC = () => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#f59e0b' }}>👥</span> Danh Mục Đối Tượng (NCC & Khách Hàng)
+            <Icon name="users" color="#f59e0b" />
+            Danh Mục Đối Tượng (NCC & Khách Hàng)
           </h1>
           <p>Quản lý thông tin Nhà cung cấp đầu vào và Khách hàng / Đại lý phân phối đầu ra</p>
         </div>
@@ -108,16 +110,16 @@ export const ContactPage: React.FC = () => {
             className={`btn ${subTab === 'SUPPLIER' ? 'btn-emerald' : 'btn-outline'}`}
             onClick={() => setSubTab('SUPPLIER')}
           >
-            🏢 Nhà cung cấp ({suppliers.length})
+            <Icon name="building" /> Nhà cung cấp ({suppliers.length})
           </button>
           <button
             className={`btn ${subTab === 'CUSTOMER' ? 'btn-emerald' : 'btn-outline'}`}
             onClick={() => setSubTab('CUSTOMER')}
           >
-            🤝 Khách hàng ({customers.length})
+            <Icon name="handshake" /> Khách hàng ({customers.length})
           </button>
           <button className="btn btn-emerald" onClick={openCreateModal}>
-            + Thêm {subTab === 'SUPPLIER' ? 'Nhà cung cấp' : 'Khách hàng'}
+            <Icon name="add" /> Thêm {subTab === 'SUPPLIER' ? 'Nhà cung cấp' : 'Khách hàng'}
           </button>
         </div>
       </div>
@@ -125,7 +127,7 @@ export const ContactPage: React.FC = () => {
       <div className="surface-card">
         <div className="filter-bar">
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">              <Icon name="search" /></span>
             <input
               className="search-box-input"
               placeholder="Tìm theo mã, tên đối tượng, số điện thoại, email..."
@@ -220,7 +222,7 @@ export const ContactPage: React.FC = () => {
                 Thêm mới {subTab === 'SUPPLIER' ? 'Nhà Cung Cấp' : 'Khách Hàng'}
               </div>
               <button className="modal-close-btn" onClick={() => setShowModal(false)}>
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <form onSubmit={handleSave}>
@@ -294,7 +296,7 @@ export const ContactPage: React.FC = () => {
                   Hủy
                 </button>
                 <button type="submit" className="btn btn-emerald">
-                  💾 Lưu Đối Tượng
+                  <Icon name="disk" /> Lưu Đối Tượng
                 </button>
               </div>
             </form>

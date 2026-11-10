@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { inventoryService } from '../../services/inventoryService';
 import { masterDataService } from '../../services/masterDataService';
@@ -138,19 +139,20 @@ export const WarehousePage: React.FC = () => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#10b981' }}>🏭</span> Danh Mục Kho Hàng
+            <Icon name="warehouse-alt" color="#10b981" />
+            Danh Mục Kho Hàng
           </h1>
           <p>Quản lý các điểm kho, kho tổng, chi nhánh và người phụ trách</p>
         </div>
         <div className="page-actions">
           <button className="btn btn-emerald" onClick={openCreateModal}>
-            + Thêm kho
+            <Icon name="add" /> Thêm kho
           </button>
           <button
             className="btn btn-outline"
             onClick={() => notifySuccess('Đã xuất Danh mục Kho hàng ra Excel!')}
           >
-            📗 Excel
+            <Icon name="file-excel" /> Excel
           </button>
         </div>
       </div>
@@ -159,7 +161,7 @@ export const WarehousePage: React.FC = () => {
       <div className="surface-card">
         <div className="filter-bar">
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">              <Icon name="search" /></span>
             <input
               className="search-box-input"
               placeholder="Tìm theo mã kho, tên kho, người phụ trách..."
@@ -224,14 +226,14 @@ export const WarehousePage: React.FC = () => {
                         title="Chỉnh sửa kho"
                         onClick={() => openEditModal(w)}
                       >
-                        ✏️
+                        <Icon name="pencil" />
                       </button>
                       <button
                         className="icon-action-btn danger"
                         title="Xóa kho"
                         onClick={() => handleDeleteWarehouse(w)}
                       >
-                        🗑️
+                        <Icon name="trash" />
                       </button>
                     </td>
                   </tr>
@@ -272,9 +274,9 @@ export const WarehousePage: React.FC = () => {
                 { value: '20', label: '20' },
               ]}
             />
-            <button className="page-btn">«</button>
+            <button className="page-btn" aria-label="Trang trước"><Icon name="angle-double-small-left" /></button>
             <button className="page-btn active">1</button>
-            <button className="page-btn">»</button>
+            <button className="page-btn" aria-label="Trang sau"><Icon name="angle-double-small-right" /></button>
           </div>
         </div>
       </div>
@@ -285,7 +287,7 @@ export const WarehousePage: React.FC = () => {
           <div className="modal-dialog lg" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="modal-title">
-                🎄 Chi Tiết Tồn Kho:{' '}
+                <Icon name="boxes" color="#10b981" /> Chi Tiết Tồn Kho:{' '}
                 <span style={{ color: '#059669' }}>
                   {detailWarehouse.warehouse_name.toUpperCase()}
                 </span>
@@ -294,13 +296,13 @@ export const WarehousePage: React.FC = () => {
                 className="modal-close-btn"
                 onClick={() => setDetailWarehouse(null)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <div className="modal-body">
               <div className="filter-bar">
                 <div className="search-box-wrapper">
-                  <span className="search-box-icon">🔍</span>
+                  <span className="search-box-icon">              <Icon name="search" /></span>
                   <input
                     className="search-box-input"
                     placeholder="Tìm mã hàng, tên hàng..."
@@ -404,7 +406,7 @@ export const WarehousePage: React.FC = () => {
                 className="modal-close-btn"
                 onClick={() => setShowFormModal(false)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <form onSubmit={handleSaveWarehouse}>
@@ -453,7 +455,7 @@ export const WarehousePage: React.FC = () => {
                   Hủy
                 </button>
                 <button type="submit" className="btn btn-emerald">
-                  💾 Lưu Kho Hàng
+                  <Icon name="disk" /> Lưu Kho Hàng
                 </button>
               </div>
             </form>

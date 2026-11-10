@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { inventoryService } from '../../services/inventoryService';
 import { masterDataService } from '../../services/masterDataService';
@@ -220,7 +221,8 @@ export const ProductCategoryPage: React.FC = () => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#0ea5e9' }}>📦</span> Danh Mục Hàng Hóa
+            <Icon name="box" color="#0ea5e9" />
+            Danh Mục Hàng Hóa
           </h1>
           <p>
             Quản lý danh mục vật tư, linh kiện, hàng hóa, quy cách đóng gói và định mức tồn kho tối thiểu
@@ -231,16 +233,16 @@ export const ProductCategoryPage: React.FC = () => {
             className="btn btn-outline"
             onClick={() => setShowCategoryModal(true)}
           >
-            🏷️ Nhóm hàng ({categories.length})
+            <Icon name="tags" /> Nhóm hàng ({categories.length})
           </button>
           <button className="btn btn-emerald" onClick={openCreateModal}>
-            + Thêm hàng
+            <Icon name="add" /> Thêm hàng
           </button>
           <button
             className="btn btn-outline"
             onClick={() => notifySuccess('Đã xuất danh sách Hàng hóa ra file Excel!')}
           >
-            📗 Excel
+            <Icon name="file-excel" /> Excel
           </button>
         </div>
       </div>
@@ -249,7 +251,7 @@ export const ProductCategoryPage: React.FC = () => {
       <div className="surface-card">
         <div className="filter-bar">
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">              <Icon name="search" /></span>
             <input
               className="search-box-input"
               placeholder="Tìm mã hàng, tên hàng, thương hiệu..."
@@ -347,14 +349,14 @@ export const ProductCategoryPage: React.FC = () => {
                       title="Chỉnh sửa hàng hóa"
                       onClick={() => openEditModal(p)}
                     >
-                      ✏️
+                      <Icon name="pencil" />
                     </button>
                     <button
                       className="icon-action-btn danger"
                       title="Xóa hàng hóa"
                       onClick={() => handleDeleteProduct(p)}
                     >
-                      🗑️
+                      <Icon name="trash" />
                     </button>
                   </td>
                 </tr>
@@ -401,9 +403,9 @@ export const ProductCategoryPage: React.FC = () => {
                 { value: '50', label: '50' },
               ]}
             />
-            <button className="page-btn">«</button>
+            <button className="page-btn" aria-label="Trang trước"><Icon name="angle-double-small-left" /></button>
             <button className="page-btn active">1</button>
-            <button className="page-btn">»</button>
+            <button className="page-btn" aria-label="Trang sau"><Icon name="angle-double-small-right" /></button>
           </div>
         </div>
       </div>
@@ -422,7 +424,7 @@ export const ProductCategoryPage: React.FC = () => {
                 className="modal-close-btn"
                 onClick={() => setShowProductModal(false)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
 
@@ -500,7 +502,7 @@ export const ProductCategoryPage: React.FC = () => {
                   }}
                 >
                   <div style={{ fontWeight: 700, fontSize: 13.5, color: '#0f172a' }}>
-                    🏭 Tồn đầu kỳ theo Kho
+                    <Icon name="warehouse-alt" /> Tồn đầu kỳ theo Kho
                   </div>
                   <button
                     type="button"
@@ -517,7 +519,7 @@ export const ProductCategoryPage: React.FC = () => {
                       ])
                     }
                   >
-                    + Thêm kho
+                    <Icon name="add" /> Thêm kho
                   </button>
                 </div>
 
@@ -609,7 +611,7 @@ export const ProductCategoryPage: React.FC = () => {
                                 )
                               }
                             >
-                              🗑️
+                              <Icon name="trash" />
                             </button>
                           </td>
                         </tr>
@@ -628,7 +630,7 @@ export const ProductCategoryPage: React.FC = () => {
                   Hủy bỏ
                 </button>
                 <button type="submit" className="btn btn-emerald">
-                  💾 Lưu Hàng Hóa
+                  <Icon name="disk" /> Lưu Hàng Hóa
                 </button>
               </div>
             </form>
@@ -641,12 +643,14 @@ export const ProductCategoryPage: React.FC = () => {
         <div className="modal-backdrop" onClick={() => setShowCategoryModal(false)}>
           <div className="modal-dialog md" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <div className="modal-title">🏷️ Quản lý Phân loại / Nhóm hàng</div>
+              <div className="modal-title">
+                <Icon name="tags" /> Quản lý Phân loại / Nhóm hàng
+              </div>
               <button
                 className="modal-close-btn"
                 onClick={() => setShowCategoryModal(false)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <div className="modal-body">
@@ -691,7 +695,7 @@ export const ProductCategoryPage: React.FC = () => {
                   />
                 </div>
                 <button type="submit" className="btn btn-emerald" style={{ height: 36 }}>
-                  + Thêm
+                  <Icon name="add" /> Thêm
                 </button>
               </form>
 

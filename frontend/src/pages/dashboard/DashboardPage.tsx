@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { inventoryService } from '../../services/inventoryService';
 import {
@@ -87,7 +88,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#10b981' }}>📈</span> Tổng Quan Tình Hình Kho Hàng
+            <Icon name="chart-line-up" color="#10b981" />
+            Tổng Quan Tình Hình Kho Hàng
           </h1>
           <p>Theo dõi chỉ số tồn kho, nhập xuất và cảnh báo định mức thời gian thực</p>
         </div>
@@ -97,19 +99,19 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
             className="btn btn-emerald"
             onClick={() => onNavigate?.('purchase-orders')}
           >
-            + Nhập kho
+            <Icon name="add" /> Nhập kho
           </button>
           <button
             className="btn btn-danger"
             onClick={() => onNavigate?.('outbound-orders')}
           >
-            + Xuất kho
+            <Icon name="add" /> Xuất kho
           </button>
           <button
             className="btn btn-warning"
             onClick={() => onNavigate?.('stock-transfers')}
           >
-            ⇄ Chuyển kho
+            <Icon name="exchange" /> Chuyển kho
           </button>
         </div>
       </div>
@@ -117,7 +119,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
       {/* 4 MAIN KPI CARDS */}
       <div className="kpi-grid-4">
         <div className="kpi-main-card">
-          <div className="kpi-icon-box indigo">📦</div>
+          <div className="kpi-icon-box indigo">
+            <Icon name="box" />
+          </div>
           <div className="kpi-content">
             <div className="kpi-label">MẶT HÀNG & KHO HÀNG</div>
             <div className="kpi-value">
@@ -127,46 +131,52 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
               </span>
             </div>
             <div className="kpi-sub muted">
-              🏭 Tổng số kho: <strong>{summary.total_warehouses} kho</strong>
+              <Icon name="warehouse-alt" /> Tổng số kho: <strong>{summary.total_warehouses} kho</strong>
             </div>
           </div>
         </div>
 
         <div className="kpi-main-card">
-          <div className="kpi-icon-box emerald">↓</div>
+          <div className="kpi-icon-box emerald">
+            <Icon name="inbox-in" />
+          </div>
           <div className="kpi-content">
             <div className="kpi-label">NHẬP KHO TRONG KỲ</div>
             <div className="kpi-value">
               {(inboundTotalAmount || summary.total_inventory_value * 0.42).toLocaleString('vi-VN')} ₫
             </div>
             <div className="kpi-sub emerald">
-              📥 Tổng SL nhập: {(inboundTotalQty || 145).toLocaleString('vi-VN')} sp
+              <Icon name="inbox-in" /> Tổng SL nhập: {(inboundTotalQty || 145).toLocaleString('vi-VN')} sp
             </div>
           </div>
         </div>
 
         <div className="kpi-main-card">
-          <div className="kpi-icon-box red">↑</div>
+          <div className="kpi-icon-box red">
+            <Icon name="inbox-out" />
+          </div>
           <div className="kpi-content">
             <div className="kpi-label">XUẤT KHO TRONG KỲ</div>
             <div className="kpi-value">
               {(outboundTotalAmount || summary.total_inventory_value * 0.18).toLocaleString('vi-VN')} ₫
             </div>
             <div className="kpi-sub red">
-              📤 Tổng SL xuất: {(outboundTotalQty || 42).toLocaleString('vi-VN')} sp
+              <Icon name="inbox-out" /> Tổng SL xuất: {(outboundTotalQty || 42).toLocaleString('vi-VN')} sp
             </div>
           </div>
         </div>
 
         <div className="kpi-main-card">
-          <div className="kpi-icon-box teal">💵</div>
+          <div className="kpi-icon-box teal">
+            <Icon name="coins" />
+          </div>
           <div className="kpi-content">
             <div className="kpi-label">TỔNG TỒN KHO HIỆN TẠI</div>
             <div className="kpi-value">
               {summary.total_inventory_value.toLocaleString('vi-VN')} ₫
             </div>
             <div className="kpi-sub emerald">
-              🎄 Tổng SL tồn: {summary.total_stock_units.toLocaleString('vi-VN')} sp
+              <Icon name="boxes" /> Tổng SL tồn: {summary.total_stock_units.toLocaleString('vi-VN')} sp
             </div>
           </div>
         </div>
@@ -180,7 +190,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         >
           <div className="mini-alert-left">
             <div className="mini-alert-icon" style={{ background: '#fef3c7', color: '#d97706' }}>
-              ⚠️
+              <Icon name="triangle-warning" />
             </div>
             <div>
               <div className="mini-alert-title">Hàng sắp hết</div>
@@ -198,7 +208,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         >
           <div className="mini-alert-left">
             <div className="mini-alert-icon" style={{ background: '#fee2e2', color: '#dc2626' }}>
-              ⛔
+              <Icon name="ban" />
             </div>
             <div>
               <div className="mini-alert-title">Hàng tồn bằng 0</div>
@@ -213,7 +223,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         <div className="mini-alert-card">
           <div className="mini-alert-left">
             <div className="mini-alert-icon" style={{ background: '#fce7f3', color: '#db2777' }}>
-              🚫
+              <Icon name="ban" />
             </div>
             <div>
               <div className="mini-alert-title">Cảnh báo Tồn Âm</div>
@@ -231,7 +241,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         >
           <div className="mini-alert-left">
             <div className="mini-alert-icon" style={{ background: '#dbeafe', color: '#2563eb' }}>
-              📄
+              <Icon name="document" />
             </div>
             <div>
               <div className="mini-alert-title">Phiếu chưa duyệt</div>
@@ -249,7 +259,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         >
           <div className="mini-alert-left">
             <div className="mini-alert-icon" style={{ background: '#d1fae5', color: '#059669' }}>
-              🔄
+              <Icon name="refresh" />
             </div>
             <div>
               <div className="mini-alert-title">Giao dịch gần đây</div>
@@ -267,7 +277,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         >
           <div className="mini-alert-left">
             <div className="mini-alert-icon" style={{ background: '#fef3c7', color: '#b45309' }}>
-              🤝
+              <Icon name="handshake" />
             </div>
             <div>
               <div className="mini-alert-title">Đối tác & KH</div>
@@ -286,7 +296,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         <div className="chart-card">
           <div className="chart-header">
             <div className="chart-title">
-              <span style={{ color: '#10b981' }}>📊</span> Xu hướng Nhập - Xuất theo tháng
+              <Icon name="chart-histogram" color="#10b981" />
+              Xu hướng Nhập - Xuất theo tháng
             </div>
             <span className="chart-tag">Kỳ 2026</span>
           </div>
@@ -403,7 +414,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         <div className="chart-card">
           <div className="chart-header">
             <div className="chart-title">
-              <span style={{ color: '#0ea5e9' }}>🏢</span> Biến động Tồn kho & Dòng vốn theo Kho
+              <Icon name="building" color="#0ea5e9" />
+              Biến động Tồn kho & Dòng vốn theo Kho
             </div>
             <div style={{ display: 'flex', gap: 4 }}>
               <span
@@ -517,7 +529,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         {/* Donut 1: Cơ cấu Giá trị theo Kho hàng */}
         <div className="chart-card">
           <div className="chart-header">
-            <div className="chart-title">◕ Cơ cấu Giá trị theo Kho hàng</div>
+            <div className="chart-title">
+              <Icon name="chart-pie" /> Cơ cấu Giá trị theo Kho hàng
+            </div>
             <span className="chart-tag">% Tỷ trọng</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 18, paddingTop: 6 }}>
@@ -569,7 +583,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         {/* Horizontal Bar: Top Mặt hàng & Cảnh báo tồn thấp */}
         <div className="chart-card">
           <div className="chart-header">
-            <div className="chart-title">🏆 Top Mặt hàng & Cảnh báo Tồn kho</div>
+            <div className="chart-title">
+              <Icon name="trophy" /> Top Mặt hàng & Cảnh báo Tồn kho
+            </div>
             <span className="chart-tag">Sản lượng</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -646,7 +662,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         {/* Donut 2: Giá trị tồn theo Nhóm phân loại */}
         <div className="chart-card">
           <div className="chart-header">
-            <div className="chart-title">🏷️ Giá trị tồn theo Nhóm phân loại</div>
+            <div className="chart-title">
+              <Icon name="tags" /> Giá trị tồn theo Nhóm phân loại
+            </div>
             <span className="chart-tag">Ngành hàng</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 18, paddingTop: 6 }}>

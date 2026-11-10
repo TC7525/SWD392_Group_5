@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { Icon } from './Icon';
 
 export interface SelectOption {
   value: string | number;
@@ -115,7 +116,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <span className={`custom-select-arrow ${open ? 'rotated' : ''}`}>
-          ▾
+          <Icon name="angle-small-down" />
         </span>
       </button>
 
@@ -135,7 +136,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                 <input
                   type="text"
                   className="custom-select-search-input"
-                  placeholder="🔍 Tìm nhanh..."
+                  placeholder="Tìm nhanh..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   autoFocus
@@ -165,7 +166,9 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                       )}
                     </div>
                     {isSelected && (
-                      <span className="custom-select-check">✓</span>
+                      <span className="custom-select-check">
+                        <Icon name="check" />
+                      </span>
                     )}
                   </div>
                 );

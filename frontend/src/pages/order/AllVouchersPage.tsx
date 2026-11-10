@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   outboundOrderService,
@@ -109,7 +110,8 @@ export const AllVouchersPage: React.FC<AllVouchersPageProps> = ({
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#3b82f6' }}>📋</span> Quản Lý Tổng Hợp Phiếu
+            <Icon name="clipboard-list" color="#3b82f6" />
+            Quản Lý Tổng Hợp Phiếu
           </h1>
           <p>
             Tổng hợp toàn bộ phiếu Nhập kho, Xuất kho và Chuyển kho, theo dõi luồng giao dịch và trạng thái phê duyệt
@@ -120,25 +122,25 @@ export const AllVouchersPage: React.FC<AllVouchersPageProps> = ({
             className="btn btn-emerald"
             onClick={() => onNavigate?.('purchase-orders')}
           >
-            + Nhập kho
+            <Icon name="add" /> Nhập kho
           </button>
           <button
             className="btn btn-danger"
             onClick={() => onNavigate?.('outbound-orders')}
           >
-            + Xuất kho
+            <Icon name="add" /> Xuất kho
           </button>
           <button
             className="btn btn-warning"
             onClick={() => onNavigate?.('stock-transfers')}
           >
-            + Chuyển kho
+            <Icon name="add" /> Chuyển kho
           </button>
           <button
             className="btn btn-outline"
             onClick={() => notifySuccess('Đã xuất Tổng hợp phiếu ra Excel!')}
           >
-            📗 Excel
+            <Icon name="file-excel" /> Excel
           </button>
         </div>
       </div>
@@ -171,14 +173,14 @@ export const AllVouchersPage: React.FC<AllVouchersPageProps> = ({
             onChange={setFilterType}
             options={[
               { value: 'ALL', label: 'Tất cả loại phiếu' },
-              { value: 'INBOUND', label: '↓ Phiếu Nhập kho' },
-              { value: 'OUTBOUND', label: '↑ Phiếu Xuất kho' },
-              { value: 'TRANSFER', label: '⇄ Phiếu Chuyển kho' },
+              { value: 'INBOUND', label: 'Phiếu nhập kho' },
+              { value: 'OUTBOUND', label: 'Phiếu xuất kho' },
+              { value: 'TRANSFER', label: 'Phiếu chuyển kho' },
             ]}
           />
 
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">              <Icon name="search" /></span>
             <input
               className="search-box-input"
               placeholder="Tìm số phiếu, đối tượng, diễn giải..."
@@ -209,13 +211,19 @@ export const AllVouchersPage: React.FC<AllVouchersPageProps> = ({
                 <tr key={v.id}>
                   <td>
                     {v.type === 'INBOUND' && (
-                      <span className="status-pill emerald">↓ Nhập</span>
+                      <span className="status-pill emerald">
+                        <Icon name="arrow-down" /> Nhập
+                      </span>
                     )}
                     {v.type === 'OUTBOUND' && (
-                      <span className="status-pill danger">↑ Xuất</span>
+                      <span className="status-pill danger">
+                        <Icon name="arrow-up" /> Xuất
+                      </span>
                     )}
                     {v.type === 'TRANSFER' && (
-                      <span className="status-pill warning">⇄ Chuyển</span>
+                      <span className="status-pill warning">
+                        <Icon name="exchange" /> Chuyển
+                      </span>
                     )}
                   </td>
                   <td>
@@ -240,7 +248,7 @@ export const AllVouchersPage: React.FC<AllVouchersPageProps> = ({
                       title="In phiếu"
                       onClick={() => window.print()}
                     >
-                      🖨️
+                      <Icon name="print" />
                     </button>
                     <button
                       className="icon-action-btn"
@@ -255,7 +263,7 @@ export const AllVouchersPage: React.FC<AllVouchersPageProps> = ({
                         )
                       }
                     >
-                      ✏️
+                      <Icon name="pencil" />
                     </button>
                   </td>
                 </tr>
@@ -287,9 +295,9 @@ export const AllVouchersPage: React.FC<AllVouchersPageProps> = ({
                 { value: '20', label: '20' },
               ]}
             />
-            <button className="page-btn">«</button>
+            <button className="page-btn" aria-label="Trang trước"><Icon name="angle-double-small-left" /></button>
             <button className="page-btn active">1</button>
-            <button className="page-btn">»</button>
+            <button className="page-btn" aria-label="Trang sau"><Icon name="angle-double-small-right" /></button>
           </div>
         </div>
       </div>

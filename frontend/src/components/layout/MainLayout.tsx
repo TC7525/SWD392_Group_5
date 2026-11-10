@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { type NavTabKey } from '../../types/auth.types';
+import { Icon } from '../common/Icon';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 
@@ -34,23 +35,27 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <main className="content-container">
           {errorMsg && (
             <div className="alert-banner error">
-              <span>⚠️ {errorMsg}</span>
+              <span>
+                <Icon name="triangle-warning" /> {errorMsg}
+              </span>
               <button
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', fontWeight: 700 }}
                 onClick={() => notifyError('')}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
           )}
           {successMsg && (
             <div className="alert-banner success">
-              <span>✓ {successMsg}</span>
+              <span>
+                <Icon name="check" /> {successMsg}
+              </span>
               <button
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', fontWeight: 700 }}
                 onClick={() => notifySuccess('')}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
           )}

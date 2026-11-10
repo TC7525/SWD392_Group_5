@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { inventoryService } from '../../services/inventoryService';
 import { masterDataService } from '../../services/masterDataService';
@@ -177,7 +178,8 @@ export const InventoryPage: React.FC = () => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#10b981' }}>🎄</span> Tra Cứu Tồn Kho Tức Thời
+            <Icon name="boxes" color="#10b981" />
+            Tra Cứu Tồn Kho Tức Thời
           </h1>
           <p>
             Bảng tổng hợp Tồn đầu, Nhập, Xuất, Tồn cuối và Giá trị vốn cập nhật tự động theo từng chi nhánh kho
@@ -188,10 +190,10 @@ export const InventoryPage: React.FC = () => {
             className="btn btn-outline"
             onClick={() => notifySuccess('Đã xuất Báo cáo Tồn kho tức thời ra Excel!')}
           >
-            📗 Excel
+            <Icon name="file-excel" /> Excel
           </button>
           <button className="btn btn-outline" onClick={() => window.print()}>
-            🖨️ In
+            <Icon name="print" /> In
           </button>
         </div>
       </div>
@@ -200,7 +202,7 @@ export const InventoryPage: React.FC = () => {
       <div className="surface-card">
         <div className="filter-bar">
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">              <Icon name="search" /></span>
             <input
               className="search-box-input"
               placeholder="Tìm theo mã hàng, tên hàng..."
@@ -314,7 +316,7 @@ export const InventoryPage: React.FC = () => {
                       className="btn btn-outline btn-sm"
                       onClick={() => openStockCard(r)}
                     >
-                      📓 Sổ kho
+                      <Icon name="book" /> Sổ kho
                     </button>
                   </td>
                 </tr>
@@ -359,9 +361,9 @@ export const InventoryPage: React.FC = () => {
                 { value: '20', label: '20' },
               ]}
             />
-            <button className="page-btn">«</button>
+            <button className="page-btn" aria-label="Trang trước"><Icon name="angle-double-small-left" /></button>
             <button className="page-btn active">1</button>
-            <button className="page-btn">»</button>
+            <button className="page-btn" aria-label="Trang sau"><Icon name="angle-double-small-right" /></button>
           </div>
         </div>
       </div>
@@ -378,7 +380,7 @@ export const InventoryPage: React.FC = () => {
           >
             <div className="modal-header">
               <div className="modal-title">
-                📓 Sổ Kho (Thẻ Kho Chi Tiết):{' '}
+                <Icon name="book" color="#10b981" /> Sổ Kho (Thẻ Kho Chi Tiết):{' '}
                 <span style={{ color: '#059669' }}>
                   {stockCardProduct.product_code} -{' '}
                   {stockCardProduct.product_name}
@@ -388,7 +390,7 @@ export const InventoryPage: React.FC = () => {
                 className="modal-close-btn"
                 onClick={() => setStockCardProduct(null)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <div className="modal-body">
@@ -450,12 +452,12 @@ export const InventoryPage: React.FC = () => {
                   className="btn btn-emerald"
                   style={{ height: 36 }}
                 >
-                  ⚖️ Cập nhật kiểm kê
+                  <Icon name="scale" /> Cập nhật kiểm kê
                 </button>
               </form>
 
               <div style={{ fontWeight: 700, marginBottom: 8 }}>
-                🕒 Lịch sử biến động Nhập - Xuất - Điều chỉnh của mặt hàng:
+                <Icon name="time-past" /> Lịch sử biến động Nhập - Xuất - Điều chỉnh của mặt hàng:
               </div>
               <div className="table-wrapper">
                 <table className="data-table">

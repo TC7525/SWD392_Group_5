@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { type NavTabKey } from '../../types/auth.types';
 import { CustomSelect } from '../common/CustomSelect';
+import { Icon } from '../common/Icon';
 
 interface HeaderProps {
   activeTab: NavTabKey;
@@ -43,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={onToggleSidebar}
           title="Thu gọn / Mở rộng thanh điều hướng"
         >
-          ☰
+          <Icon name="menu-burger" />
         </button>
         <div className="breadcrumb">
           <span
@@ -55,9 +56,11 @@ export const Header: React.FC<HeaderProps> = ({
             }}
             onClick={() => onSelectTab('dashboard')}
           >
-            🏠 Kho
+            <Icon name="home" /> Kho
           </span>
-          <span>›</span>
+          <span>
+            <Icon name="angle-small-right" />
+          </span>
           <span className="breadcrumb-current">{TAB_LABELS[activeTab]}</span>
         </div>
       </div>
@@ -68,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
           title="Cảnh báo tồn kho & phiếu chờ duyệt"
           onClick={() => onSelectTab('inventory')}
         >
-          🔔
+          <Icon name="bell" />
           <span className="notif-badge">4</span>
         </button>
 
@@ -77,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({
           title="Làm mới dữ liệu"
           onClick={() => window.location.reload()}
         >
-          ↻
+          <Icon name="refresh" />
         </button>
 
         <CustomSelect
@@ -86,18 +89,18 @@ export const Header: React.FC<HeaderProps> = ({
           onChange={(val) => switchWarehouse(val)}
           options={user.assigned_warehouses.map((w) => ({
             value: w.warehouse_id,
-            label: `📍 ${w.warehouse_name.toUpperCase()} (${w.warehouse_code})`,
+            label: `${w.warehouse_name.toUpperCase()} (${w.warehouse_code})`,
             subLabel: w.address,
           }))}
         />
 
         <button className="topbar-logout-btn" onClick={logout}>
-          <span>↪</span>
+          <Icon name="sign-out-alt" />
           <span>Đăng xuất</span>
         </button>
 
         <button className="topbar-icon-btn" title="Giao diện Sáng / Tối">
-          🌙
+          <Icon name="moon" />
         </button>
       </div>
     </header>
