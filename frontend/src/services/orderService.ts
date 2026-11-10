@@ -44,6 +44,12 @@ export const purchaseOrderService = {
       body: JSON.stringify({ id, rejection_reason }),
     }),
 
+  cancel: (id: string) =>
+    httpRequest<boolean>('api/purchase-order/cancel', {
+      method: 'POST',
+      body: JSON.stringify({ id }),
+    }),
+
   receiveGoods: (
     id: string,
     items: { purchase_order_item_id: string; receive_quantity: number }[],

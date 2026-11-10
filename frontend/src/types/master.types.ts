@@ -63,13 +63,36 @@ export interface CustomerItem {
   total_orders: number;
 }
 
+export interface PermissionItem {
+  id: string;
+  permission_code: string;
+  permission_name: string;
+  module: string;
+  action: string;
+  description?: string;
+}
+
 export interface RoleItem {
   id: string;
   role_code: string;
   role_name: string;
   description?: string;
+  status?: number;
+  status_name?: string;
   user_count?: number;
+  permissions?: PermissionItem[];
   permission_count?: number;
+}
+
+export interface RoleDetailItem {
+  id: string;
+  role_code: string;
+  role_name: string;
+  description?: string;
+  status: number;
+  status_name?: string;
+  permission_ids: string[];
+  permissions: PermissionItem[];
 }
 
 export interface AccountItem {

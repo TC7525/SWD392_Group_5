@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon, type IconName } from '../common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { type NavTabKey } from '../../types/auth.types';
 
@@ -13,7 +14,7 @@ interface NavGroup {
   items: {
     key: NavTabKey;
     label: string;
-    icon: string;
+    icon: IconName;
     iconColor?: string;
   }[];
 }
@@ -21,42 +22,42 @@ interface NavGroup {
 const NAV_GROUPS: NavGroup[] = [
   {
     sectionTitle: 'I. TỔNG QUAN',
-    items: [{ key: 'dashboard', label: 'Tổng quan', icon: '◔', iconColor: '#10b981' }],
+    items: [{ key: 'dashboard', label: 'Tổng quan', icon: 'apps', iconColor: '#10b981' }],
   },
   {
     sectionTitle: 'II. KHAI BÁO',
     items: [
-      { key: 'products', label: 'Hàng hóa', icon: '📦', iconColor: '#38bdf8' },
-      { key: 'warehouses', label: 'Kho hàng', icon: '🏭', iconColor: '#818cf8' },
-      { key: 'contacts', label: 'Đối tượng', icon: '👥', iconColor: '#fbbf24' },
+      { key: 'products', label: 'Hàng hóa', icon: 'box', iconColor: '#38bdf8' },
+      { key: 'warehouses', label: 'Kho hàng', icon: 'warehouse-alt', iconColor: '#818cf8' },
+      { key: 'contacts', label: 'Đối tượng', icon: 'users', iconColor: '#fbbf24' },
     ],
   },
   {
     sectionTitle: 'III. NGHIỆP VỤ',
     items: [
-      { key: 'purchase-orders', label: 'Nhập kho', icon: '↓', iconColor: '#10b981' },
-      { key: 'outbound-orders', label: 'Xuất kho', icon: '↑', iconColor: '#ef4444' },
-      { key: 'stock-transfers', label: 'Chuyển kho', icon: '⇄', iconColor: '#f59e0b' },
-      { key: 'all-vouchers', label: 'Quản lý phiếu', icon: '📋', iconColor: '#60a5fa' },
-      { key: 'inventory', label: 'Tồn kho', icon: '🎄', iconColor: '#10b981' },
+      { key: 'purchase-orders', label: 'Nhập kho', icon: 'inbox-in', iconColor: '#10b981' },
+      { key: 'outbound-orders', label: 'Xuất kho', icon: 'inbox-out', iconColor: '#ef4444' },
+      { key: 'stock-transfers', label: 'Chuyển kho', icon: 'exchange', iconColor: '#f59e0b' },
+      { key: 'all-vouchers', label: 'Quản lý phiếu', icon: 'clipboard-list', iconColor: '#60a5fa' },
+      { key: 'inventory', label: 'Tồn kho', icon: 'boxes', iconColor: '#10b981' },
     ],
   },
   {
     sectionTitle: 'IV. BÁO CÁO',
     items: [
-      { key: 'reports', label: 'Báo cáo', icon: '📊', iconColor: '#34d399' },
-      { key: 'history', label: 'Lịch sử', icon: '🕒', iconColor: '#94a3b8' },
+      { key: 'reports', label: 'Báo cáo', icon: 'chart-histogram', iconColor: '#34d399' },
+      { key: 'history', label: 'Lịch sử', icon: 'time-past', iconColor: '#94a3b8' },
     ],
   },
   {
     sectionTitle: 'V. BIỂU MẪU',
-    items: [{ key: 'templates', label: 'Lưu mẫu', icon: '📁', iconColor: '#fbbf24' }],
+    items: [{ key: 'templates', label: 'Lưu mẫu', icon: 'folder', iconColor: '#fbbf24' }],
   },
   {
     sectionTitle: 'VI. CẤU HÌNH',
     items: [
-      { key: 'users', label: 'Quản trị', icon: '🛡️', iconColor: '#38bdf8' },
-      { key: 'settings', label: 'Cài đặt', icon: '⚙️', iconColor: '#94a3b8' },
+      { key: 'users', label: 'Quản trị', icon: 'shield-check', iconColor: '#38bdf8' },
+      { key: 'settings', label: 'Cài đặt', icon: 'settings', iconColor: '#94a3b8' },
     ],
   },
 ];
@@ -72,7 +73,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-brand">
-        <div className="brand-logo-box">🏢</div>
+        <div className="brand-logo-box">
+          <Icon name="building" />
+        </div>
         {!collapsed && (
           <div className="brand-text">
             <h2>Quản Lý Kho</h2>
@@ -100,7 +103,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     className="nav-icon"
                     style={{ color: isActive ? '#10b981' : item.iconColor }}
                   >
-                    {item.icon}
+                    <Icon name={item.icon} />
                   </span>
                   {!collapsed && <span>{item.label}</span>}
                 </button>
@@ -130,7 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onClick={logout}
             title="Đăng xuất"
           >
-            ↪
+            <Icon name="sign-out-alt" />
           </button>
         )}
       </div>

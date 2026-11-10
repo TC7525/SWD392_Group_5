@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { inventoryService } from '../../services/inventoryService';
 import { masterDataService } from '../../services/masterDataService';
@@ -48,15 +49,31 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
   const getActionBadge = (action: string) => {
     const upper = action.toUpperCase();
     if (upper.includes('CREATE') || upper.includes('RECEIVE')) {
-      return <span className="status-pill emerald">+ Thêm mới</span>;
+      return (
+        <span className="status-pill emerald">
+          <Icon name="add" /> Thêm mới
+        </span>
+      );
     }
     if (upper.includes('DELETE') || upper.includes('REJECT')) {
-      return <span className="status-pill danger">🗑️ Xóa / Từ chối</span>;
+      return (
+        <span className="status-pill danger">
+          <Icon name="trash" /> Xóa / Từ chối
+        </span>
+      );
     }
     if (upper.includes('LOGIN')) {
-      return <span className="status-pill blue">↪ Đăng nhập</span>;
+      return (
+        <span className="status-pill blue">
+          <Icon name="sign-in-alt" /> Đăng nhập
+        </span>
+      );
     }
-    return <span className="status-pill warning">✏️ Chỉnh sửa</span>;
+    return (
+      <span className="status-pill warning">
+        <Icon name="pencil" /> Chỉnh sửa
+      </span>
+    );
   };
 
   const getModuleLabel = (mod: string) => {
@@ -83,7 +100,8 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
         <div className="page-header">
           <div className="page-title-group">
             <h1>
-              <span style={{ color: '#10b981' }}>📊</span> Báo Cáo Tổng Hợp Nhập - Xuất - Tồn
+              <Icon name="chart-histogram" color="#10b981" />
+              Báo Cáo Tổng Hợp Nhập - Xuất - Tồn
             </h1>
             <p>
               Tổng hợp số liệu cân đối Nhập - Xuất - Tồn kho và định giá tài sản lưu kho theo kỳ kế toán
@@ -94,10 +112,10 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
               className="btn btn-outline"
               onClick={() => notifySuccess('Đã xuất Báo cáo Nhập - Xuất - Tồn ra Excel!')}
             >
-              📗 Xuất Excel
+              <Icon name="file-excel" /> Xuất Excel
             </button>
             <button className="btn btn-emerald" onClick={() => window.print()}>
-              🖨️ In báo cáo
+              <Icon name="print" /> In báo cáo
             </button>
           </div>
         </div>
@@ -181,7 +199,8 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#10b981' }}>🕒</span> Nhật Ký Lịch Sử Thao Tác
+            <Icon name="time-past" color="#10b981" />
+            Nhật Ký Lịch Sử Thao Tác
           </h1>
           <p>
             Ghi nhận chi tiết lịch sử Thêm, Sửa, Xóa dữ liệu của nhân viên (Mặc định lọc hôm nay)
@@ -192,13 +211,13 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
             className="btn btn-outline"
             onClick={() => setFilterDate(new Date().toISOString().slice(0, 10))}
           >
-            📅 Hôm nay
+            <Icon name="calendar" /> Hôm nay
           </button>
           <button
             className="btn btn-outline"
             onClick={() => notifySuccess('Đã xuất Nhật ký lịch sử thao tác ra Excel!')}
           >
-            📗 Excel
+            <Icon name="file-excel" /> Excel
           </button>
         </div>
       </div>
@@ -207,7 +226,7 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
       <div className="surface-card">
         <div className="filter-bar">
           <div className="filter-group">
-            <span>📅 Ngày:</span>
+            <span><Icon name="calendar" /> Ngày:</span>
             <input
               type="date"
               className="filter-input"
@@ -222,9 +241,10 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
             onChange={setFilterAction}
             options={[
               { value: 'ALL', label: 'Tất cả hành động (Thêm/Sửa/Xóa)' },
-              { value: 'CREATE', label: '+ Thêm mới' },
-              { value: 'UPDATE', label: '✏️ Chỉnh sửa / Duyệt' },
-              { value: 'DELETE', label: '🗑️ Xóa' },
+              { value: 'CREATE', label: 'Thêm mới' },
+              { value: 'CREATE', label: 'Thêm mới' },
+              { value: 'UPDATE', label: 'Chỉnh sửa / Duyệt' },
+              { value: 'DELETE', label: 'Xóa' },
             ]}
           />
 
@@ -255,7 +275,7 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
 
         <div className="filter-bar">
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">              <Icon name="search" /></span>
             <input
               className="search-box-input"
               placeholder="Tìm người thực hiện, chi tiết nội dung..."
@@ -285,7 +305,7 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
                   <tr key={log.id}>
                     <td>{idx + 1}</td>
                     <td style={{ color: '#475569' }}>
-                      🕒{' '}
+                      <Icon name="clock" />{' '}
                       {log.created_on
                         ? new Date(log.created_on).toLocaleString('vi-VN')
                         : new Date().toLocaleString('vi-VN')}
@@ -351,9 +371,9 @@ export const ReportHistoryPage: React.FC<ReportHistoryPageProps> = ({
                 { value: '20', label: '20' },
               ]}
             />
-            <button className="page-btn">«</button>
+            <button className="page-btn" aria-label="Trang trước"><Icon name="angle-double-small-left" /></button>
             <button className="page-btn active">1</button>
-            <button className="page-btn">»</button>
+            <button className="page-btn" aria-label="Trang sau"><Icon name="angle-double-small-right" /></button>
           </div>
         </div>
       </div>

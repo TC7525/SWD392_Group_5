@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { masterDataService } from '../../services/masterDataService';
 import { purchaseOrderService } from '../../services/orderService';
@@ -153,18 +154,17 @@ export const PurchaseOrderPage: React.FC = () => {
     }
   };
 
-  const handleReject = async (id: string) => {
-    const reason = window.prompt(
-      'Nhập lý do từ chối phiếu nhập:',
-      'Sai lệch đơn giá / số lượng'
-    );
-    if (!reason) return;
+  const handleCancel = async (id: string) => {
+    if (!window.confirm('Hủy phiếu nhập này? Đơn đã lưu sẽ chuyển sang trạng thái Đã hủy.')) {
+      return;
+    }
     try {
-      await purchaseOrderService.reject(id, reason);
-      notifySuccess('Đã từ chối Phiếu Nhập Kho.');
+      await purchaseOrderService.cancel(id);
+      notifySuccess('Đã hủy Phiếu Nhập Kho.');
+      setSelectedOrder((current) => (current?.id === id ? null : current));
       loadOrders();
     } catch (err: unknown) {
-      notifyError(err instanceof Error ? err.message : 'Không thể từ chối phiếu');
+      notifyError(err instanceof Error ? err.message : 'Không thể hủy phiếu nhập');
     }
   };
 
@@ -261,7 +261,8 @@ export const PurchaseOrderPage: React.FC = () => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#10b981' }}>↓</span> Quản Lý Phiếu Nhập Kho
+            <Icon name="inbox-in" color="#10b981" />
+            Quản Lý Phiếu Nhập Kho
           </h1>
           <p>
             Ghi nhận nhập hàng từ Nhà cung cấp và tự động cập nhật số lượng tồn kho sau mỗi lần thực nhập
@@ -269,7 +270,7 @@ export const PurchaseOrderPage: React.FC = () => {
         </div>
         <div className="page-actions">
           <button className="btn btn-emerald" onClick={openCreateModal}>
-            + Nhập kho
+            <Icon name="add" /> Nhập kho
           </button>
           <button
             className="btn btn-outline"
@@ -277,7 +278,7 @@ export const PurchaseOrderPage: React.FC = () => {
               notifySuccess('Đã xuất danh sách Phiếu nhập kho ra Excel!')
             }
           >
-            📗 Excel
+            <Icon name="file-excel" /> Excel
           </button>
         </div>
       </div>
@@ -334,7 +335,9 @@ export const PurchaseOrderPage: React.FC = () => {
           />
 
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">
+              <Icon name="search" />
+            </span>
             <input
               className="search-box-input"
               placeholder="Tìm số phiếu, nhà cung cấp, diễn giải..."
@@ -386,7 +389,7 @@ export const PurchaseOrderPage: React.FC = () => {
                     {po.total_received_quantity}/{po.total_ordered_quantity}
                   </td>
                   <td style={{ textAlign: 'right' }} className="text-emerald-bold">
-                    {po.total_amount.toLocaleString('vi-VN')} ₫
+                    {po.total_amount.toLocaleString('vi-VN')}
                   </td>
                   <td>
                     <span
@@ -401,16 +404,16 @@ export const PurchaseOrderPage: React.FC = () => {
                       title="In phiếu nhập"
                       onClick={() => window.print()}
                     >
-                      🖨️
+                      <Icon name="print" />
                     </button>
                     <button
                       className="icon-action-btn"
                       title="Xem chi tiết phiếu"
                       onClick={() => openDetailModal(po.id)}
                     >
-                      ✏️
+                      <Icon name="pencil" />
                     </button>
-                    {/* Chỉ hiển thị nút Nhập kho & Từ chối khi trạng thái là Chờ duyệt (status === 1) */}
+                    {/* Đơn đã lưu (Chờ duyệt) mới được nhập kho hoặc hủy */}
                     {po.status === 1 && (
                       <>
                         <button
@@ -418,15 +421,15 @@ export const PurchaseOrderPage: React.FC = () => {
                           style={{ marginLeft: 6 }}
                           onClick={() => openDetailModal(po.id)}
                         >
-                          📥 Nhập kho
+                          <Icon name="inbox-in" /> Nhập kho
                         </button>
                         <button
                           className="btn btn-danger btn-sm"
                           style={{ marginLeft: 4 }}
-                          title="Từ chối phiếu nhập"
-                          onClick={() => handleReject(po.id)}
+                          title="Hủy phiếu nhập đã lưu"
+                          onClick={() => handleCancel(po.id)}
                         >
-                          ✕
+                          <Icon name="cross-small" /> Hủy
                         </button>
                       </>
                     )}
@@ -451,7 +454,7 @@ export const PurchaseOrderPage: React.FC = () => {
                   {sumOrderedQty.toLocaleString('vi-VN')}
                 </td>
                 <td style={{ textAlign: 'right' }} className="text-emerald-bold">
-                  {sumAmount.toLocaleString('vi-VN')} ₫
+                  {sumAmount.toLocaleString('vi-VN')} 
                 </td>
                 <td colSpan={2} />
               </tr>
@@ -475,9 +478,13 @@ export const PurchaseOrderPage: React.FC = () => {
                 { value: '20', label: '20' },
               ]}
             />
-            <button className="page-btn">«</button>
+            <button className="page-btn" aria-label="Trang trước">
+              <Icon name="angle-double-small-left" />
+            </button>
             <button className="page-btn active">1</button>
-            <button className="page-btn">»</button>
+            <button className="page-btn" aria-label="Trang sau">
+              <Icon name="angle-double-small-right" />
+            </button>
           </div>
         </div>
       </div>
@@ -494,14 +501,14 @@ export const PurchaseOrderPage: React.FC = () => {
           >
             <div className="modal-header">
               <div className="modal-title">
-                <span style={{ color: '#10b981' }}>📝</span> Lập Phiếu Nhập Kho
-                Mới
+                <Icon name="memo" color="#10b981" />
+                Lập Phiếu Nhập Kho Mới
               </div>
               <button
                 className="modal-close-btn"
                 onClick={() => setShowVoucherModal(false)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
 
@@ -591,14 +598,14 @@ export const PurchaseOrderPage: React.FC = () => {
                 <div
                   style={{ fontWeight: 700, fontSize: 13.5, color: '#0f172a' }}
                 >
-                  ☰ Chi Tiết Hàng Hóa Nhập Kho
+                  <Icon name="list" /> Chi Tiết Hàng Hóa Nhập Kho
                 </div>
                 <button
                   type="button"
                   className="btn btn-outline btn-sm"
                   onClick={handleAddLine}
                 >
-                  + Thêm Dòng
+                  <Icon name="add" /> Thêm Dòng
                 </button>
               </div>
 
@@ -688,7 +695,7 @@ export const PurchaseOrderPage: React.FC = () => {
                             style={{ textAlign: 'right' }}
                             className="text-emerald-bold"
                           >
-                            {lineTotal.toLocaleString('vi-VN')} ₫
+                            {lineTotal.toLocaleString('vi-VN')} 
                           </td>
                           <td>
                             <input
@@ -711,7 +718,7 @@ export const PurchaseOrderPage: React.FC = () => {
                                 setLines(lines.filter((_, i) => i !== idx))
                               }
                             >
-                              🗑️
+                              <Icon name="trash" />
                             </button>
                           </td>
                         </tr>
@@ -759,14 +766,14 @@ export const PurchaseOrderPage: React.FC = () => {
                 className="btn btn-outline"
                 onClick={() => handleSaveOrder(false)}
               >
-                🔖 Lưu Bản Nháp (Chờ duyệt)
+                <Icon name="bookmark" /> Lưu Bản Nháp
               </button>
               <button
                 type="button"
                 className="btn btn-emerald"
                 onClick={() => handleSaveOrder(true)}
               >
-                ✓ Lưu & Duyệt Phiếu
+                <Icon name="check" /> Lưu & Duyệt Phiếu
               </button>
             </div>
           </div>
@@ -782,7 +789,8 @@ export const PurchaseOrderPage: React.FC = () => {
           >
             <div className="modal-header">
               <div className="modal-title">
-                📥 Chi Tiết Phiếu Nhập Kho: {selectedOrder.purchase_order_code}{' '}
+                <Icon name="inbox-in" color="#10b981" /> Chi Tiết Phiếu Nhập Kho:{' '}
+                {selectedOrder.purchase_order_code}{' '}
                 <span
                   className={`status-pill ${getStatusPillClass(
                     selectedOrder.status
@@ -795,7 +803,7 @@ export const PurchaseOrderPage: React.FC = () => {
                 className="modal-close-btn"
                 onClick={() => setSelectedOrder(null)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <div className="modal-body">
@@ -875,12 +883,20 @@ export const PurchaseOrderPage: React.FC = () => {
                 Đóng
               </button>
               {selectedOrder.status === 1 && (
-                <button
-                  className="btn btn-emerald"
-                  onClick={handleReceiveGoods}
-                >
-                  ✓ Xác nhận Thực Nhập & Cộng Tồn Kho
-                </button>
+                <>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleCancel(selectedOrder.id)}
+                  >
+                    <Icon name="cross-small" /> Hủy đơn
+                  </button>
+                  <button
+                    className="btn btn-emerald"
+                    onClick={handleReceiveGoods}
+                  >
+                    Xác nhận Thực Nhập
+                  </button>
+                </>
               )}
             </div>
           </div>

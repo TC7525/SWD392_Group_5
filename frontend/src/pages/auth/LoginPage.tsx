@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 
 export const LoginPage: React.FC = () => {
@@ -30,7 +31,7 @@ export const LoginPage: React.FC = () => {
           }}
         >
           <div className="brand-logo-box" style={{ width: 42, height: 42, fontSize: 20 }}>
-            🏢
+            <Icon name="building" />
           </div>
           <div style={{ textAlign: 'left' }}>
             <h2 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a' }}>
@@ -120,7 +121,11 @@ export const LoginPage: React.FC = () => {
             style={{ width: '100%', height: 40, fontSize: 14 }}
             disabled={loading}
           >
-            {loading ? 'Đang xác thực...' : '↪ Đăng nhập hệ thống'}
+            {loading ? 'Đang xác thực...' : (
+              <>
+                <Icon name="sign-in-alt" /> Đăng nhập hệ thống
+              </>
+            )}
           </button>
         </form>
       </div>

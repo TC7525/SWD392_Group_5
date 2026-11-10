@@ -70,28 +70,165 @@ namespace ewms_service.SeedData
                 await context.SaveChangesAsync();
             }
 
-            // 2. Seed Permissions
-            if (!await context.permissions.AnyAsync())
+            // 2. Seed / Sync Permissions
+            var definedPermissions = new List<permission>
             {
-                var permissions = new List<permission>
-                {
-                    new permission { id = "perm-user-manage", permission_code = "USER.MANAGE", permission_name = "Quản lý người dùng & phân quyền", module = "USER", action = "MANAGE" }.Created("SYSTEM"),
-                    new permission { id = "perm-master-manage", permission_code = "MASTER.MANAGE", permission_name = "Quản lý dữ liệu danh mục", module = "MASTER", action = "MANAGE" }.Created("SYSTEM"),
-                    new permission { id = "perm-po-create", permission_code = "PO.CREATE", permission_name = "Tạo đơn mua hàng", module = "PURCHASE_ORDER", action = "CREATE" }.Created("SYSTEM"),
-                    new permission { id = "perm-po-approve", permission_code = "PO.APPROVE", permission_name = "Phê duyệt / Từ chối đơn mua hàng", module = "PURCHASE_ORDER", action = "APPROVE" }.Created("SYSTEM"),
-                    new permission { id = "perm-po-receive", permission_code = "PO.RECEIVE", permission_name = "Thực nhập hàng vào kho", module = "PURCHASE_ORDER", action = "RECEIVE" }.Created("SYSTEM"),
-                    new permission { id = "perm-so-create", permission_code = "SO.CREATE", permission_name = "Tạo đơn xuất kho", module = "OUTBOUND_ORDER", action = "CREATE" }.Created("SYSTEM"),
-                    new permission { id = "perm-so-approve", permission_code = "SO.APPROVE", permission_name = "Phê duyệt / Từ chối đơn xuất kho", module = "OUTBOUND_ORDER", action = "APPROVE" }.Created("SYSTEM"),
-                    new permission { id = "perm-so-issue", permission_code = "SO.ISSUE", permission_name = "Thực xuất hàng khỏi kho", module = "OUTBOUND_ORDER", action = "ISSUE" }.Created("SYSTEM"),
-                    new permission { id = "perm-trf-create", permission_code = "TRF.CREATE", permission_name = "Tạo yêu cầu chuyển kho", module = "STOCK_TRANSFER", action = "CREATE" }.Created("SYSTEM"),
-                    new permission { id = "perm-trf-approve", permission_code = "TRF.APPROVE", permission_name = "Phê duyệt / Từ chối chuyển kho", module = "STOCK_TRANSFER", action = "APPROVE" }.Created("SYSTEM"),
-                    new permission { id = "perm-trf-dispatch", permission_code = "TRF.DISPATCH", permission_name = "Xuất chuyển kho", module = "STOCK_TRANSFER", action = "DISPATCH" }.Created("SYSTEM"),
-                    new permission { id = "perm-trf-receive", permission_code = "TRF.RECEIVE", permission_name = "Nhận chuyển kho", module = "STOCK_TRANSFER", action = "RECEIVE" }.Created("SYSTEM"),
-                    new permission { id = "perm-report-view", permission_code = "REPORT.VIEW", permission_name = "Xem thống kê & lịch sử tồn kho", module = "REPORT", action = "VIEW" }.Created("SYSTEM")
-                };
+                // Dashboard
+                new permission { id = "perm-dashboard-view", permission_code = "DASHBOARD.VIEW", permission_name = "Xem bảng tổng quan", module = "DASHBOARD", action = "VIEW" }.Created("SYSTEM"),
 
-                await context.permissions.AddRangeAsync(permissions);
-                await context.SaveChangesAsync();
+                // Hàng hóa
+                new permission { id = "perm-product-view", permission_code = "PRODUCT.VIEW", permission_name = "Xem danh mục hàng hóa", module = "PRODUCT", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-product-manage", permission_code = "PRODUCT.MANAGE", permission_name = "Thêm, sửa, xóa hàng hóa", module = "PRODUCT", action = "MANAGE" }.Created("SYSTEM"),
+                new permission { id = "perm-product-export", permission_code = "PRODUCT.EXPORT", permission_name = "In & Xuất Excel hàng hóa", module = "PRODUCT", action = "EXPORT" }.Created("SYSTEM"),
+
+                // Kho hàng
+                new permission { id = "perm-warehouse-view", permission_code = "WAREHOUSE.VIEW", permission_name = "Xem danh sách kho & khu vực", module = "WAREHOUSE", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-warehouse-manage", permission_code = "WAREHOUSE.MANAGE", permission_name = "Thêm, sửa, xóa kho hàng", module = "WAREHOUSE", action = "MANAGE" }.Created("SYSTEM"),
+                new permission { id = "perm-warehouse-export", permission_code = "WAREHOUSE.EXPORT", permission_name = "In & Xuất Excel kho hàng", module = "WAREHOUSE", action = "EXPORT" }.Created("SYSTEM"),
+
+                // Đối tượng (NCC & Khách hàng)
+                new permission { id = "perm-partner-view", permission_code = "PARTNER.VIEW", permission_name = "Xem NCC & Khách hàng", module = "PARTNER", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-partner-manage", permission_code = "PARTNER.MANAGE", permission_name = "Thêm, sửa, xóa NCC & Khách hàng", module = "PARTNER", action = "MANAGE" }.Created("SYSTEM"),
+                new permission { id = "perm-partner-export", permission_code = "PARTNER.EXPORT", permission_name = "In & Xuất Excel NCC & Khách hàng", module = "PARTNER", action = "EXPORT" }.Created("SYSTEM"),
+
+                // Nhập kho (PO)
+                new permission { id = "perm-po-view", permission_code = "PO.VIEW", permission_name = "Xem đơn nhập kho", module = "PURCHASE_ORDER", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-po-manage", permission_code = "PO.MANAGE", permission_name = "Tạo, sửa, xóa đơn nhập kho", module = "PURCHASE_ORDER", action = "MANAGE" }.Created("SYSTEM"),
+                new permission { id = "perm-po-export", permission_code = "PO.EXPORT", permission_name = "In & Xuất Excel đơn nhập kho", module = "PURCHASE_ORDER", action = "EXPORT" }.Created("SYSTEM"),
+                new permission { id = "perm-po-approve", permission_code = "PO.APPROVE", permission_name = "Phê duyệt đơn nhập kho", module = "PURCHASE_ORDER", action = "APPROVE" }.Created("SYSTEM"),
+                new permission { id = "perm-po-create", permission_code = "PO.CREATE", permission_name = "Tạo đơn mua hàng", module = "PURCHASE_ORDER", action = "CREATE" }.Created("SYSTEM"),
+                new permission { id = "perm-po-receive", permission_code = "PO.RECEIVE", permission_name = "Thực nhập hàng vào kho", module = "PURCHASE_ORDER", action = "RECEIVE" }.Created("SYSTEM"),
+
+                // Xuất kho (SO)
+                new permission { id = "perm-so-view", permission_code = "SO.VIEW", permission_name = "Xem đơn xuất kho", module = "OUTBOUND_ORDER", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-so-manage", permission_code = "SO.MANAGE", permission_name = "Tạo, sửa, xóa đơn xuất kho", module = "OUTBOUND_ORDER", action = "MANAGE" }.Created("SYSTEM"),
+                new permission { id = "perm-so-export", permission_code = "SO.EXPORT", permission_name = "In & Xuất Excel đơn xuất kho", module = "OUTBOUND_ORDER", action = "EXPORT" }.Created("SYSTEM"),
+                new permission { id = "perm-so-approve", permission_code = "SO.APPROVE", permission_name = "Phê duyệt đơn xuất kho", module = "OUTBOUND_ORDER", action = "APPROVE" }.Created("SYSTEM"),
+                new permission { id = "perm-so-create", permission_code = "SO.CREATE", permission_name = "Tạo đơn xuất kho", module = "OUTBOUND_ORDER", action = "CREATE" }.Created("SYSTEM"),
+                new permission { id = "perm-so-issue", permission_code = "SO.ISSUE", permission_name = "Thực xuất hàng khỏi kho", module = "OUTBOUND_ORDER", action = "ISSUE" }.Created("SYSTEM"),
+
+                // Chuyển kho (TRF)
+                new permission { id = "perm-trf-view", permission_code = "TRF.VIEW", permission_name = "Xem yêu cầu chuyển kho", module = "STOCK_TRANSFER", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-trf-manage", permission_code = "TRF.MANAGE", permission_name = "Tạo, sửa, xóa yêu cầu chuyển kho", module = "STOCK_TRANSFER", action = "MANAGE" }.Created("SYSTEM"),
+                new permission { id = "perm-trf-export", permission_code = "TRF.EXPORT", permission_name = "In & Xuất Excel phiếu chuyển kho", module = "STOCK_TRANSFER", action = "EXPORT" }.Created("SYSTEM"),
+                new permission { id = "perm-trf-approve", permission_code = "TRF.APPROVE", permission_name = "Phê duyệt chuyển kho", module = "STOCK_TRANSFER", action = "APPROVE" }.Created("SYSTEM"),
+                new permission { id = "perm-trf-create", permission_code = "TRF.CREATE", permission_name = "Tạo yêu cầu chuyển kho", module = "STOCK_TRANSFER", action = "CREATE" }.Created("SYSTEM"),
+                new permission { id = "perm-trf-dispatch", permission_code = "TRF.DISPATCH", permission_name = "Xuất chuyển kho", module = "STOCK_TRANSFER", action = "DISPATCH" }.Created("SYSTEM"),
+                new permission { id = "perm-trf-receive", permission_code = "TRF.RECEIVE", permission_name = "Nhận chuyển kho", module = "STOCK_TRANSFER", action = "RECEIVE" }.Created("SYSTEM"),
+
+                // Tồn kho (INVENTORY)
+                new permission { id = "perm-inventory-view", permission_code = "INVENTORY.VIEW", permission_name = "Xem thông tin tồn kho & thẻ kho", module = "INVENTORY", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-inventory-manage", permission_code = "INVENTORY.MANAGE", permission_name = "Điều chỉnh & kiểm kê tồn kho", module = "INVENTORY", action = "MANAGE" }.Created("SYSTEM"),
+                new permission { id = "perm-inventory-export", permission_code = "INVENTORY.EXPORT", permission_name = "In & Xuất Excel tồn kho", module = "INVENTORY", action = "EXPORT" }.Created("SYSTEM"),
+
+                // Báo cáo N-X-T (REPORT)
+                new permission { id = "perm-report-view", permission_code = "REPORT.VIEW", permission_name = "Xem thống kê & báo cáo N-X-T", module = "REPORT", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-report-export", permission_code = "REPORT.EXPORT", permission_name = "Xuất Excel báo cáo N-X-T", module = "REPORT", action = "EXPORT" }.Created("SYSTEM"),
+
+                // Lịch sử & Nhật ký (AUDIT_LOG)
+                new permission { id = "perm-audit-view", permission_code = "AUDIT_LOG.VIEW", permission_name = "Xem lịch sử thao tác & nhật ký truy cập", module = "AUDIT_LOG", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-audit-export", permission_code = "AUDIT_LOG.EXPORT", permission_name = "Xuất Excel nhật ký truy cập", module = "AUDIT_LOG", action = "EXPORT" }.Created("SYSTEM"),
+
+                // Người dùng & Danh mục
+                new permission { id = "perm-user-view", permission_code = "USER.VIEW", permission_name = "Xem danh sách người dùng & vai trò", module = "USER", action = "VIEW" }.Created("SYSTEM"),
+                new permission { id = "perm-user-manage", permission_code = "USER.MANAGE", permission_name = "Quản lý người dùng & phân quyền", module = "USER", action = "MANAGE" }.Created("SYSTEM"),
+                new permission { id = "perm-master-manage", permission_code = "MASTER.MANAGE", permission_name = "Quản lý dữ liệu danh mục", module = "MASTER", action = "MANAGE" }.Created("SYSTEM")
+            };
+
+            var existingPermCodes = await context.permissions.Select(p => p.permission_code).ToListAsync();
+            foreach (var p in definedPermissions)
+            {
+                if (!existingPermCodes.Contains(p.permission_code))
+                {
+                    await context.permissions.AddAsync(p);
+                }
+            }
+            await context.SaveChangesAsync();
+
+            // 2.1. Seed Default Role Permissions
+            if (!await context.role_permissions.AnyAsync())
+            {
+                var allDbPerms = await context.permissions.AsNoTracking().ToListAsync();
+                var permMap = allDbPerms.ToDictionary(p => p.permission_code, p => p.id);
+
+                var rolePermsToSeed = new List<role_permission>();
+
+                // Helper to add role permissions safely
+                void AddPermsToRole(string roleId, IEnumerable<string> codes)
+                {
+                    foreach (var code in codes)
+                    {
+                        if (permMap.TryGetValue(code, out var permId))
+                        {
+                            rolePermsToSeed.Add(new role_permission
+                            {
+                                role_id = roleId,
+                                permission_id = permId
+                            }.Created("SYSTEM"));
+                        }
+                    }
+                }
+
+                // 1. ADMIN - All permissions
+                AddPermsToRole("role-admin", allDbPerms.Select(p => p.permission_code));
+
+                // 2. WAREHOUSE MANAGER - Toàn quyền quản lý kho, duyệt phiếu, xuất báo cáo
+                AddPermsToRole("role-wm", new[]
+                {
+                    "DASHBOARD.VIEW",
+                    "PRODUCT.VIEW", "PRODUCT.MANAGE", "PRODUCT.EXPORT",
+                    "WAREHOUSE.VIEW", "WAREHOUSE.MANAGE", "WAREHOUSE.EXPORT",
+                    "PARTNER.VIEW", "PARTNER.EXPORT",
+                    "PO.VIEW", "PO.MANAGE", "PO.EXPORT", "PO.APPROVE", "PO.CREATE", "PO.RECEIVE",
+                    "SO.VIEW", "SO.MANAGE", "SO.EXPORT", "SO.APPROVE", "SO.CREATE", "SO.ISSUE",
+                    "TRF.VIEW", "TRF.MANAGE", "TRF.EXPORT", "TRF.APPROVE", "TRF.CREATE", "TRF.DISPATCH", "TRF.RECEIVE",
+                    "INVENTORY.VIEW", "INVENTORY.MANAGE", "INVENTORY.EXPORT",
+                    "REPORT.VIEW", "REPORT.EXPORT",
+                    "AUDIT_LOG.VIEW", "AUDIT_LOG.EXPORT",
+                    "USER.VIEW"
+                });
+
+                // 3. WAREHOUSE STAFF - Nghiệp vụ kho, kiểm đếm, in phiếu, không có quyền duyệt
+                AddPermsToRole("role-ws", new[]
+                {
+                    "DASHBOARD.VIEW",
+                    "PRODUCT.VIEW", "PRODUCT.EXPORT",
+                    "WAREHOUSE.VIEW",
+                    "PARTNER.VIEW",
+                    "PO.VIEW", "PO.MANAGE", "PO.EXPORT", "PO.RECEIVE",
+                    "SO.VIEW", "SO.MANAGE", "SO.EXPORT", "SO.ISSUE",
+                    "TRF.VIEW", "TRF.MANAGE", "TRF.EXPORT", "TRF.DISPATCH", "TRF.RECEIVE",
+                    "INVENTORY.VIEW", "INVENTORY.MANAGE", "INVENTORY.EXPORT",
+                    "REPORT.VIEW", "REPORT.EXPORT"
+                });
+
+                // 4. SALES STAFF - Quản lý khách hàng, tạo đơn xuất kho
+                AddPermsToRole("role-sales", new[]
+                {
+                    "DASHBOARD.VIEW",
+                    "PRODUCT.VIEW", "PRODUCT.EXPORT",
+                    "PARTNER.VIEW", "PARTNER.MANAGE", "PARTNER.EXPORT",
+                    "SO.VIEW", "SO.MANAGE", "SO.EXPORT", "SO.CREATE",
+                    "INVENTORY.VIEW", "INVENTORY.EXPORT",
+                    "REPORT.VIEW", "REPORT.EXPORT"
+                });
+
+                // 5. PURCHASE STAFF - Quản lý nhà cung cấp, tạo đơn mua hàng
+                AddPermsToRole("role-purchase", new[]
+                {
+                    "DASHBOARD.VIEW",
+                    "PRODUCT.VIEW", "PRODUCT.EXPORT",
+                    "PARTNER.VIEW", "PARTNER.MANAGE", "PARTNER.EXPORT",
+                    "PO.VIEW", "PO.MANAGE", "PO.EXPORT", "PO.CREATE",
+                    "INVENTORY.VIEW", "INVENTORY.EXPORT",
+                    "REPORT.VIEW", "REPORT.EXPORT"
+                });
+
+                if (rolePermsToSeed.Any())
+                {
+                    await context.role_permissions.AddRangeAsync(rolePermsToSeed);
+                    await context.SaveChangesAsync();
+                }
             }
 
             // 3. Seed Default Warehouses (Multi-warehouse: Hà Nội & TP.HCM)

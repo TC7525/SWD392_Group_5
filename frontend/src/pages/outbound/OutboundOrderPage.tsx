@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 import { masterDataService } from '../../services/masterDataService';
 import { outboundOrderService } from '../../services/orderService';
@@ -184,7 +185,8 @@ export const OutboundOrderPage: React.FC = () => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#ef4444' }}>↑</span> Quản Lý Phiếu Xuất Kho
+            <Icon name="inbox-out" color="#ef4444" />
+            Quản Lý Phiếu Xuất Kho
           </h1>
           <p>
             Quản lý lệnh xuất bán hàng, kiểm tra tồn kho khả dụng và trừ tồn kho tự động khi thực xuất
@@ -192,13 +194,13 @@ export const OutboundOrderPage: React.FC = () => {
         </div>
         <div className="page-actions">
           <button className="btn btn-danger" onClick={openCreateModal}>
-            + Xuất kho
+            <Icon name="add" /> Xuất kho
           </button>
           <button
             className="btn btn-outline"
             onClick={() => notifySuccess('Đã xuất danh sách Phiếu xuất kho ra Excel!')}
           >
-            📗 Excel
+            <Icon name="file-excel" /> Excel
           </button>
         </div>
       </div>
@@ -254,7 +256,9 @@ export const OutboundOrderPage: React.FC = () => {
           />
 
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">
+              <Icon name="search" />
+            </span>
             <input
               className="search-box-input"
               placeholder="Tìm số phiếu xuất, khách hàng, diễn giải..."
@@ -322,7 +326,7 @@ export const OutboundOrderPage: React.FC = () => {
                       title="In phiếu xuất"
                       onClick={() => window.print()}
                     >
-                      🖨️
+                      <Icon name="print" />
                     </button>
                     {so.status === 1 && (
                       <>
@@ -331,14 +335,14 @@ export const OutboundOrderPage: React.FC = () => {
                           style={{ marginLeft: 4 }}
                           onClick={() => handleApprove(so.id)}
                         >
-                          ✓ Duyệt
+                          <Icon name="check" /> Duyệt
                         </button>
                         <button
                           className="btn btn-danger btn-sm"
                           style={{ marginLeft: 4 }}
                           onClick={() => handleReject(so.id)}
                         >
-                          ✕
+                          <Icon name="cross-small" />
                         </button>
                       </>
                     )}
@@ -348,7 +352,7 @@ export const OutboundOrderPage: React.FC = () => {
                         style={{ marginLeft: 4 }}
                         onClick={() => handleIssueGoods(so.id)}
                       >
-                        📤 Thực xuất kho
+                        <Icon name="inbox-out" /> Thực xuất kho
                       </button>
                     )}
                   </td>
@@ -404,13 +408,14 @@ export const OutboundOrderPage: React.FC = () => {
           <div className="modal-dialog lg" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="modal-title">
-                <span style={{ color: '#ef4444' }}>📤</span> Lập Phiếu Xuất Kho Mới
+                <Icon name="inbox-out" color="#ef4444" />
+                Lập Phiếu Xuất Kho Mới
               </div>
               <button
                 className="modal-close-btn"
                 onClick={() => setShowModal(false)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <div className="modal-body">
@@ -489,14 +494,14 @@ export const OutboundOrderPage: React.FC = () => {
                 }}
               >
                 <div style={{ fontWeight: 700, fontSize: 13.5 }}>
-                  ☰ Chi Tiết Hàng Hóa Xuất Kho
+                  <Icon name="list" /> Chi Tiết Hàng Hóa Xuất Kho
                 </div>
                 <button
                   type="button"
                   className="btn btn-outline btn-sm"
                   onClick={handleAddLine}
                 >
-                  + Thêm Dòng
+                  <Icon name="add" /> Thêm Dòng
                 </button>
               </div>
 
@@ -597,7 +602,7 @@ export const OutboundOrderPage: React.FC = () => {
                                 setLines(lines.filter((_, i) => i !== idx))
                               }
                             >
-                              🗑️
+                              <Icon name="trash" />
                             </button>
                           </td>
                         </tr>
@@ -640,14 +645,14 @@ export const OutboundOrderPage: React.FC = () => {
                 className="btn btn-outline"
                 onClick={() => handleSaveOrder(false)}
               >
-                🔖 Lưu Bản Nháp
+                <Icon name="bookmark" /> Lưu Bản Nháp
               </button>
               <button
                 type="button"
                 className="btn btn-danger"
                 onClick={() => handleSaveOrder(true)}
               >
-                ✓ Lưu & Duyệt Phiếu Xuất
+                <Icon name="check" /> Lưu & Duyệt Phiếu Xuất
               </button>
             </div>
           </div>

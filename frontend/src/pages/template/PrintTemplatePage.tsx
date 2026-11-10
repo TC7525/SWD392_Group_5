@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { Icon } from '../../components/common/Icon';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface PrintTemplateItem {
@@ -120,7 +121,8 @@ export const PrintTemplatePage: React.FC = () => {
       <div className="page-header">
         <div className="page-title-group">
           <h1>
-            <span style={{ color: '#10b981' }}>📁</span> Thư Mục Biểu Mẫu In Ấn & Lưu Trữ
+            <Icon name="folder" color="#10b981" />
+            Thư Mục Biểu Mẫu In Ấn & Lưu Trữ
           </h1>
           <p>Quản lý, tạo mới, chỉnh sửa và in ấn các biểu mẫu theo chuẩn Bộ Tài Chính</p>
         </div>
@@ -129,7 +131,7 @@ export const PrintTemplatePage: React.FC = () => {
             className="btn btn-emerald"
             onClick={() => openEditModal(undefined)}
           >
-            + Thêm biểu mẫu
+            <Icon name="add" /> Thêm biểu mẫu
           </button>
         </div>
       </div>
@@ -138,7 +140,7 @@ export const PrintTemplatePage: React.FC = () => {
       <div className="surface-card">
         <div className="filter-bar" style={{ marginBottom: 0 }}>
           <div className="search-box-wrapper">
-            <span className="search-box-icon">🔍</span>
+            <span className="search-box-icon">              <Icon name="search" /></span>
             <input
               className="search-box-input"
               placeholder="Tìm kiếm tên hoặc mã biểu mẫu..."
@@ -193,7 +195,9 @@ export const PrintTemplatePage: React.FC = () => {
                 {tpl.category}
               </span>
               <div style={{ display: 'flex', gap: 6 }}>
-                <span className="status-pill gray">☰ {tpl.defaultRows} dòng</span>
+                <span className="status-pill gray">
+                  <Icon name="list" /> {tpl.defaultRows} dòng
+                </span>
                 <span className="status-pill gray">{tpl.category}</span>
               </div>
             </div>
@@ -212,7 +216,7 @@ export const PrintTemplatePage: React.FC = () => {
                   fontSize: 18,
                 }}
               >
-                📄
+                <Icon name="document" />
               </div>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 800, color: '#0f172a' }}>
@@ -247,14 +251,14 @@ export const PrintTemplatePage: React.FC = () => {
                 style={{ flex: 1 }}
                 onClick={() => window.print()}
               >
-                🖨️ In mẫu
+                <Icon name="print" /> In mẫu
               </button>
               <button
                 className="icon-action-btn"
                 title="Cập nhật biểu mẫu"
                 onClick={() => openEditModal(tpl)}
               >
-                ✏️
+                <Icon name="pencil" />
               </button>
               <button
                 className="icon-action-btn danger"
@@ -263,7 +267,7 @@ export const PrintTemplatePage: React.FC = () => {
                   setTemplates(templates.filter((x) => x.id !== tpl.id))
                 }
               >
-                🗑️
+                <Icon name="trash" />
               </button>
             </div>
           </div>
@@ -280,7 +284,7 @@ export const PrintTemplatePage: React.FC = () => {
                 className="modal-close-btn"
                 onClick={() => setEditingTpl(null)}
               >
-                ✕
+                <Icon name="cross-small" />
               </button>
             </div>
             <form onSubmit={handleSaveTemplate}>
@@ -355,7 +359,7 @@ export const PrintTemplatePage: React.FC = () => {
                       marginBottom: 8,
                     }}
                   >
-                    🏢 Tiêu đề đơn vị (in ở góc trên bên trái phiếu)
+                    <Icon name="building" /> Tiêu đề đơn vị (in ở góc trên bên trái phiếu)
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 12.5 }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -390,7 +394,7 @@ export const PrintTemplatePage: React.FC = () => {
                       marginBottom: 8,
                     }}
                   >
-                    📊 Cột hiển thị trong bảng khi in
+                    <Icon name="chart-histogram" /> Cột hiển thị trong bảng khi in
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 12.5 }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -416,7 +420,7 @@ export const PrintTemplatePage: React.FC = () => {
 
                 <div className="form-group">
                   <label>
-                    ✍️ Cấu hình chữ ký cuối phiếu (mỗi chức danh phân cách bởi dấu phẩy)
+                    <Icon name="pen-nib" /> Cấu hình chữ ký cuối phiếu (mỗi chức danh phân cách bởi dấu phẩy)
                   </label>
                   <input
                     className="form-control"
@@ -434,7 +438,7 @@ export const PrintTemplatePage: React.FC = () => {
                   Hủy
                 </button>
                 <button type="submit" className="btn btn-emerald">
-                  💾 Lưu Biểu Mẫu
+                  <Icon name="disk" /> Lưu Biểu Mẫu
                 </button>
               </div>
             </form>
